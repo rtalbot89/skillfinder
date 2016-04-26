@@ -1,0 +1,27 @@
+﻿
+<div class="row">
+    <div class="col-md-6 col-md-offset-3" ng-if="viewProfile.isProfile == true">
+        <h2>My profile</h2>
+        <a class="btn btn-primary" ng-href="#/edit">Edit</a>
+        <dl class="dl-horizontal">
+            <dt>Name</dt>
+            <dd>{{viewProfile.data.User.Name}}</dd>
+            <dt>OU</dt>
+            <dd>{{viewProfile.data.OU.Name}}</dd>
+            <dt>Skills</dt>
+            <dd>
+                <ul class="list-inline">
+                    <li ng-repeat="skill in viewProfile.skills">{{skill}}</li>
+                </ul>
+
+            </dd>
+        </dl>
+       
+    </div>
+</div>
+<div ng-if="viewProfile.isProfile == false">
+    <div class="col-md-6 col-md-offset-3">
+        <p>You don't seem to have a profile yet. Please fill one in.</p>
+    </div>
+
+</div>

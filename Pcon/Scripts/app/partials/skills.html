@@ -1,0 +1,23 @@
+﻿<ul class="list-unstyled">
+    <li ng-repeat="word in skills" class="well well-sm">
+        <button class="btn btn-danger btn-xs" ng-click="removeSkill(word)"><i class="glyphicon glyphicon-remove"></i></button>
+        {{word}}
+      
+    </li>
+</ul>
+    <label for="skill" class="sr-only">Add skill</label>
+    <div class="input-group">
+        <input type="text" autocomplete="off" ng-model="skill" id="skill"
+               uib-typeahead="address for address in getLocation($viewValue)"
+               typeahead-loading="loadingLocations"
+               typeahead-no-results="noResults"
+               typeahead-min-length=4
+               class="form-control">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button" ng-click="addSkill()">Add skill</button>
+        </span>
+    </div>
+    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+    <div ng-show="noResults">
+        <i class="glyphicon glyphicon-remove"></i> No Results Found
+    </div>
