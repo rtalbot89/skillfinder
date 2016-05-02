@@ -238,8 +238,10 @@
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\hammer.png" />
     <Content Include="Content\masthead-logo-bleed-sm.svg" />
     <Content Include="Content\masthead.svg" />
+    <Content Include="Content\personicon.png" />
     <Content Include="Content\select2.css" />
     <Content Include="Content\select2.png" />
     <Content Include="Content\select2x2.png" />
@@ -299,6 +301,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Scripts\d3\d3.js" />
+    <Content Include="Scripts\d3\d3.min.js" />
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="Scripts\angular-touch.min.js.map" />
@@ -313,6 +317,7 @@
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Content\library_border_lhs_id7.jpg" />
     <None Include="Properties\PublishProfiles\skillfinder.pubxml" />
+    <Content Include="Scripts\d3\LICENSE" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-er.js" />

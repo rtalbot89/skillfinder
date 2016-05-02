@@ -19,8 +19,8 @@ namespace Pcon.Api
                 .Where((Skill qs) => qs.Name == id)
                 .Return((user, otherskill, ou, qs)
                 => new {
-                    User = user.As<User>(),
-                    Skills = otherskill.CollectAs<User>(),
+                    user = user.As<User>(),
+                    skills = otherskill.CollectAs<User>(),
                     qs =qs.As<User>(),
                     OU = ou.As<OU>()
                 }
