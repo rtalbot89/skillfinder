@@ -238,9 +238,12 @@
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\masthead-logo-bleed-sm.svg" />
+    <Content Include="Content\masthead.svg" />
     <Content Include="Content\select2.css" />
     <Content Include="Content\select2.png" />
     <Content Include="Content\select2x2.png" />
+    <Content Include="Content\skillfinder.png" />
     <Content Include="Content\spinner.gif" />
     <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="favicon.ico" />
@@ -284,6 +287,8 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\find.js" />
     <Content Include="Scripts\app\partials\edit.html" />
+    <Content Include="Scripts\app\partials\force.html" />
+    <Content Include="Scripts\app\partials\graph.html" />
     <Content Include="Scripts\app\partials\home.html" />
     <Content Include="Scripts\app\partials\new.html" />
     <Content Include="Scripts\app\partials\skills.html" />
@@ -306,6 +311,7 @@
     <Content Include="Scripts\angular-cookies.min.js.map" />
     <Content Include="Scripts\angular-aria.min.js.map" />
     <Content Include="Scripts\angular-animate.min.js.map" />
+    <Content Include="Content\library_border_lhs_id7.jpg" />
     <None Include="Properties\PublishProfiles\skillfinder.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />

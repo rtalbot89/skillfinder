@@ -10,19 +10,27 @@
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+ 
+   <div class="container">
+       <header class="id7-masthead">
+        <!--   <h1>Skill finder</h1> -->
+       </header>
+      
+    <div class="navbar navbar-default">
+       
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                   <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                     
                 </button>
-                @Html.ActionLink("Skill Finder", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                  <li>@Html.ActionLink("All profiles", "Index", "Profile")</li>
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                  <li>@Html.ActionLink("Search skills", "Index", "Profile")</li>
+                    <li><a href="/profile/#/graph">Graph</a></li>
                     <!--
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
@@ -34,14 +42,13 @@
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
-        </div>
-    </div>
-    <div class="container">
-        @RenderBody()
       
-        <footer>
-        </footer>
     </div>
+   
+        @RenderBody()
+
+    </div>
+  
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

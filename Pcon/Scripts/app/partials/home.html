@@ -1,22 +1,30 @@
-﻿
+﻿<h2>Search skills</h2>
 <form ng-submit="profiles.searchSkills()">
-    <div class="input-group">
+    <div class="form-group">
         <input type="text" autocomplete="off" ng-model="profiles.skill" id="skill"
                uib-typeahead="address for address in profiles.getLocation($viewValue)"
                typeahead-loading="loadingLocations"
                typeahead-no-results="noResults"
-               typeahead-min-length=4
+               typeahead-min-length= 3
+               typeahead-on-select="profiles.searchSkills()"
                class="form-control">
+        <!--
         <span class="input-group-btn">
             <button class="btn btn-default" type="submit" ng-click="profiles.searchSkills()">Search</button>
         </span>
+            -->
     </div>
 </form>
 <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
 <div ng-show="noResults">
     <i class="glyphicon glyphicon-remove"></i> No Results Found
 </div>
-<div ng-repeat="result in profiles.searchResults">
-    <p>{{result.User.Name}} - {{result.OU.Name}}<br/>
-    </p>
-</div>
+<ul class="list-unstyled">
+<li ng-repeat="result in profiles.searchResults">
+    <h4 style="padding-bottom:0px;margin-bottom:0px;">{{result.User.Name}}</h4>
+    <ul class="list list-inline">
+        <li ng-repeat="skill in result.Skills | orderBy: 'Name'" style="margin-left:0px; padding-left:0px;">{{skill.Name}}</li>
+    </ul>
+    <small>Works in: {{result.OU.Name}}</small>
+</li>
+</ul>

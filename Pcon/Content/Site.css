@@ -1,19 +1,16 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+    font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #383838;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
 
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
 .dl-horizontal dt {
-    white-space: normal;
+   /* white-space: normal;*/
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
@@ -29,7 +26,7 @@ textarea {
     left: 0;
     z-index: 1000;
     display: none;
-    background-color: #f9f9f9;
+    /*background-color: #f9f9f9;*/
   }
 
   .typeahead-demo .custom-popup-wrapper > .message {
@@ -55,4 +52,58 @@ textarea {
 
 input.ng-valid.ng-touched {
    /* background-color: #78FA89;*/
+}
+
+
+/* ID7 stuff*/
+@media (min-width: 768px) {
+    .id7-masthead {
+        background-image: url('masthead-logo-bleed-sm.svg');
+        background-repeat: no-repeat;
+        background-position: 0 24px;
+        background-size: 1170px 300px;
+        background-color:#3f4246;
+        height:120px; 
+    }
+
+    .id7-masthead h1 {
+        padding-top:130px;
+        margin-top: 0;
+        margin-left:20px;
+        font-size: 30px;
+    }
+
+    .navbar {
+    /*border-radius: 0px;*/
+}
+}
+.id7-page-header {
+    background-color: white;
+    margin:0;
+    padding:0;
+}
+
+@media (min-width: 768px) {
+    .id7-left-border {
+        background-image: url("library_border_lhs_id7.jpg");
+    }
+}
+
+.navbar-inverse {
+    background-color: #3f4246;
+    border-color: #080808;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  /*  color: #999999;
+     color: #ffffff; */
+}
+
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+   /* color: #ffffff;
+    color: #999999; */
+}
+
+body > div > div.jumbotron > ul > li > a {
+    color: white;
 }
