@@ -107,3 +107,10 @@ input.ng-valid.ng-touched {
 body > div > div.jumbotron > ul > li > a {
     color: white;
 }
+
+.link {
+ stroke: #999;
+  stroke-opacity: .6;
+  stroke-width: 2px;
+}
+ 

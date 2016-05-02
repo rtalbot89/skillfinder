@@ -42,7 +42,7 @@
                p.Skills.push(p.qs);
            });
 
-           console.log(profiles.searchResults);
+           // console.log(profiles.searchResults);
        },
        function () {
            console.log("failed");
@@ -54,7 +54,7 @@
     $http.get("/api/skillsearch")
     .then(
     function (result) {
-       // console.log(result.data);
+        // console.log(result.data);
         graph.force = {};
         graph.force.nodes = [];
         graph.force.links = [];
@@ -73,7 +73,7 @@
                     nodeTracker.push({ skill: s.Name });
                     skillId = nodeTracker.length - 1;
                 } else {
-                    skilId = hasId;
+                    skillId = hasId;
                 }
                 graph.force.links.push({ source: userId, target: skillId });
             }
@@ -81,26 +81,65 @@
 
         nodeTracker.forEach(function (t) {
             if (t.user !== undefined) {
-                graph.force.nodes.push({ name: t.user, type: "user"});
+                graph.force.nodes.push({ name: t.user, type: "user" });
             }
             if (t.skill !== undefined) {
                 graph.force.nodes.push({ name: t.skill, type: "skill" });
-            } 
+            }
         });
 
-        console.log(nodeTracker);
+        //console.log(nodeTracker);
     },
     function () {
         console.log("failed");
     }
     );
+
+    graph.getLocation = function (val) {
+        return $http.get('/api/autoskills', {
+            params: {
+                query: val
+            }
+        }).then(function (response) {
+            return response.data.map(function (item) {
+                return item.Name;
+            });
+        });
+    };
+    graph.filters = [];
+    graph.addFilter = function () {
+        console.log(graph.force.nodes);
+        console.log(graph.force.links);
+        //console.log(graph.skill);
+        graph.filters.push(graph.skill);
+        for (var i = 0; i < graph.force.nodes.length; i++) {
+
+            var node = graph.force.nodes[i];
+            console.log(node);
+            if (node.type === "skill" && node.name !== graph.skill) {
+
+                graph.force.nodes.splice(i, 1);
+                for (var j = 0; j < graph.force.links.length; j++) {
+                    var link = graph.force.links[j];
+                    if (link.source.index === i) {
+                        graph.force.links.splice(j, 1);
+                    }
+
+                }
+               
+            }
+        }
+        graph.skill = "";
+        console.log(graph.force.nodes);
+        console.log(graph.force.links);
+    };
 })
 .directive("skillgraph", function () {
     function dlink(scope, element, attrs) {
-        console.log("directive runs");
-       var width = 500,
-       height = 400;
-       var color = d3.scale.category20();
+        //console.log("directive runs");
+        var width = 500,
+        height = 400;
+        var color = d3.scale.category20();
         var svg = d3.select(element[0]).append("svg")
             .attr("width", width)
             .attr("height", height);
@@ -109,8 +148,8 @@
         var links = [];
 
         scope.$watch(function (newVal, oldVal, scope) {
-            console.log(oldVal);
-         
+            console.log(newVal);
+
             if (newVal.links !== undefined && newVal.nodes !== undefined) {
                 nodes = [];
                 links = [];
@@ -125,11 +164,11 @@
 
             var force = d3.layout.force()
                 .charge(-120)
-                .linkDistance(30)
+                .linkDistance(50)
                 .size([width, height]);
 
-            console.log(links);
-            console.log(nodes);
+            //console.log(links);
+            //console.log(nodes);
             force
                 .nodes(nodes)
                 .links(links)
@@ -142,14 +181,23 @@
             var link = svg.selectAll(".link")
                 .data(links)
                 .enter().append("line")
-                .attr("class", "link")
-                .style("stroke-width", 1);
+                .attr("class", "link");
+            //.style("stroke-width", 1);
 
             var node = svg.selectAll(".node")
                 .data(nodes)
-                .enter().append("circle")
+                //.enter().append("circle")
+                  .enter().append("g")
                 .attr("class", "node")
-                .attr("r", 10)
+                .style("fill", function (d) {
+                    if (d.type === "user") {
+                        return "#5731F2";
+                    }
+
+                    return "#30B5FF";
+
+                })
+                //.attr("r", 10)
                 /*
                 .style("fill", function (d) {
                    
@@ -157,10 +205,29 @@
                 })
                 */
                 .call(force.drag);
-            
+           
+
+            node.append("circle")
+            .attr("r", 16);
+
+            var iconType = function (d) {
+                if (d.type === "skill") {
+                    //console.log(d.type);
+                    return "/content/hammer.png";
+                }
+                return "/content/personicon.png";
+
+            };
+
+            node.append("image")
+                .attr("xlink:href", function (d) { return iconType(d);})
+                .attr("x", -8)
+                .attr("y", -8)
+                .attr("width", 16)
+                .attr("height", 16);
+
             node.append("title")
                 .text(function (d) { return d.name; });
-                
 
             force.on("tick", function () {
                 // nodes[0].x = width / 2;
@@ -170,8 +237,10 @@
                     .attr("x2", function (d) { return d.target.x; })
                     .attr("y2", function (d) { return d.target.y; });
 
-                node.attr("cx", function (d) { return d.x; })
-                    .attr("cy", function (d) { return d.y; });
+                node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+                //node.attr("cx", function (d) { return d.x; })
+                //    .attr("cy", function (d) { return d.y; });
 
             });
             /*
@@ -180,8 +249,6 @@
             }
             */
         }
-
-
     }
 
     return {
@@ -190,9 +257,10 @@
             nodes: '=nodes',
             links: '=links'
         },
-        templateUrl: '/scripts/app/partials/force.html',
+        //templateUrl: '/scripts/app/partials/force.html',
         link: dlink
     };
-
-
-});
+})
+    .factory("AutoSk", function ($resource) {
+     return $resource("/api/autoskills:id", { id: "@id" });
+ });

@@ -1,2 +1,32 @@
-﻿should be a graph
+﻿<div class="col-md-2">Showing all
+    <p>Filter</p>
+    <form ng-submit="graph.searchSkills()">
+        <div class="form-group">
+            <input type="text" autocomplete="off" ng-model="graph.skill" id="skill"
+                   uib-typeahead="address for address in graph.getLocation($viewValue)"
+                   typeahead-loading="loadingLocations"
+                   typeahead-no-results="noResults"
+                   typeahead-min-length=3
+                   typeahead-on-select="graph.addFilter()"
+                   class="form-control">
+            <!--
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit" ng-click="profiles.searchSkills()">Search</button>
+            </span>
+                -->
+        </div>
+    </form>
+    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+    <div ng-show="noResults">
+        <i class="glyphicon glyphicon-remove"></i> No Results Found
+    </div>
+    <ul class="list-unstyled">
+        <li ng-repeat="filter in graph.filters">{{filter}}</li>
+    </ul>
+    </div>
+
+
+
+<div class="col-md-10">
 <skillGraph links="graph.force.links" nodes="graph.force.nodes"></skillGraph>
+</div>
