@@ -62,45 +62,33 @@
         var nodeTracker = [];
         for (var i = 0 ; i < result.data.length; i++) {
             var d = result.data[i];
-            nodeTracker.push(d.user.Name);
-            var userId = nodeTracker.indexOf(d.user.Name);
+            nodeTracker.push({ user: d.user.Name });
+            var userId = nodeTracker.length - 1;
 
             for (var j = 0; j < d.skills.length; j++) {
                 var s = d.skills[j];
-                if (nodeTracker.indexOf(s.Name) === -1) {
-                    nodeTracker.push(s.Name);
+                var skillId;
+                var hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
+                if (hasId === -1) {
+                    nodeTracker.push({ skill: s.Name });
+                    skillId = nodeTracker.length - 1;
+                } else {
+                    skilId = hasId;
                 }
-                var skillId = nodeTracker.indexOf(s.Name);
                 graph.force.links.push({ source: userId, target: skillId });
             }
         }
 
         nodeTracker.forEach(function (t) {
-            graph.force.nodes.push({ name: t });
-        });
-        /*
-        result.data.forEach(function (d) {
-            if (nodeTracker.indexOf(d.user.Name) === -1) {
-                nodeTracker.push(d.user.Name);
+            if (t.user !== undefined) {
+                graph.force.nodes.push({ name: t.user, type: "user"});
             }
-            var userId = nodeTracker.indexOf(d.user.Name);
-            d.skills.forEach(function (s) {
-                if (nodeTracker.indexOf(s.Name) === -1) {
-                    nodeTracker.push(s.Name);
-                }
-
-                var skillId = nodeTracker.indexOf(s.Name);
-                graph.force.links.push({ source: userId, target: skillId });
-
-            });
-            nodeTracker.forEach(function (t) {
-                graph.force.nodes.push({ name: t });
-            });
+            if (t.skill !== undefined) {
+                graph.force.nodes.push({ name: t.skill, type: "skill" });
+            } 
         });
-        */
-       //console.log(graph.force.nodes);
-       //console.log(graph.force.links);
 
+        console.log(nodeTracker);
     },
     function () {
         console.log("failed");
@@ -169,10 +157,10 @@
                 })
                 */
                 .call(force.drag);
-            /*
+            
             node.append("title")
-                .text(function (d) { return d; });
-                */
+                .text(function (d) { return d.name; });
+                
 
             force.on("tick", function () {
                 // nodes[0].x = width / 2;
