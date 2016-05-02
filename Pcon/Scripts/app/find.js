@@ -60,6 +60,25 @@
         graph.force.links = [];
         var index = 0;
         var nodeTracker = [];
+        for (var i = 0 ; i < result.data.length; i++) {
+            var d = result.data[i];
+            nodeTracker.push(d.user.Name);
+            var userId = nodeTracker.indexOf(d.user.Name);
+
+            for (var j = 0; j < d.skills.length; j++) {
+                var s = d.skills[j];
+                if (nodeTracker.indexOf(s.Name) === -1) {
+                    nodeTracker.push(s.Name);
+                }
+                var skillId = nodeTracker.indexOf(s.Name);
+                graph.force.links.push({ source: userId, target: skillId });
+            }
+        }
+
+        nodeTracker.forEach(function (t) {
+            graph.force.nodes.push({ name: t });
+        });
+        /*
         result.data.forEach(function (d) {
             if (nodeTracker.indexOf(d.user.Name) === -1) {
                 nodeTracker.push(d.user.Name);
@@ -74,16 +93,11 @@
                 graph.force.links.push({ source: userId, target: skillId });
 
             });
-
-
-
-            //graph.force.nodes = nodeTracker;
             nodeTracker.forEach(function (t) {
                 graph.force.nodes.push({ name: t });
-
             });
         });
-
+        */
        //console.log(graph.force.nodes);
        //console.log(graph.force.links);
 
