@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+﻿using System.Web.Http;
 using Pcon.Models;
 
 namespace Pcon.Api
@@ -12,16 +7,16 @@ namespace Pcon.Api
     {
         public IHttpActionResult Get(string id)
         {
-          
             var graphClient = WebApiConfig.GraphClient;
             var profile = graphClient.Cypher
                 .Match("(user:User)-[:HAS_SKILL]->(qs:Skill), (otherskill:Skill)<-[:HAS_SKILL]-(user)-[:WORKS_IN]->(ou: OU)")
                 .Where((Skill qs) => qs.Name == id)
                 .Return((user, otherskill, ou, qs)
-                => new {
+                => new
+                {
                     user = user.As<User>(),
                     skills = otherskill.CollectAs<User>(),
-                    qs =qs.As<User>(),
+                    qs = qs.As<User>(),
                     OU = ou.As<OU>()
                 }
                 )
@@ -39,11 +34,46 @@ namespace Pcon.Api
                 {
                     user = user.As<User>(),
                     skills = skill.CollectAs<User>()
-
                 }
                 )
                 .Results;
             return Ok(profiles);
+        }
+
+        public IHttpActionResult Post(string[] id)
+        {
+            //MATCH(u: User) -[:HAS_SKILL]->(a)WHERE a.Name IN["Poetry", "Horse riding"] RETURN u, a
+            var graphClient = WebApiConfig.GraphClient;
+            if (id.Length > 0)
+            {
+                var profile = graphClient.Cypher
+                .Match("(user:User)-[:HAS_SKILL]->(s) WHERE s.Name IN {skillList}")
+                .WithParam("skillList", id)
+                .Return((user, s)
+                => new
+                {
+                    user = user.As<User>(),
+                    skills = s.CollectAs<User>()
+                }
+                )
+                .Results;
+                return Ok(profile);
+
+            }
+            else
+            {
+                var profiles = graphClient.Cypher
+               .Match("(user:User)-[:HAS_SKILL]->(skill:Skill)")
+               .Return((user, skill) => new
+               {
+                   user = user.As<User>(),
+                   skills = skill.CollectAs<User>()
+               }
+               )
+               .Results;
+                return Ok(profiles);
+
+            }
 
         }
     }

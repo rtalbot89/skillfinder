@@ -41,8 +41,6 @@
            profiles.searchResults.forEach(function (p) {
                p.Skills.push(p.qs);
            });
-
-           // console.log(profiles.searchResults);
        },
        function () {
            console.log("failed");
@@ -51,10 +49,16 @@
 })
 .controller("graphController", function ($http) {
     var graph = this;
+    graph.filters = [];
+    graph.skill ="";
    
-    var setNodes = function () {
-        graph.skill = "Poetry";
-        $http.get("/api/skillsearch", { params: { id: graph.skill } })
+    graph.setNodes = function () {
+        if (graph.skill !== "") {
+            graph.filters.push(graph.skill);
+            graph.skill = "";
+        }
+
+        $http.post("/api/skillsearch", graph.filters)
         .then(
         function (result) {
             // console.log(result.data);
@@ -92,8 +96,6 @@
                 }
                 nid++;
             });
-
-            //console.log(nodeTracker);
         },
         function () {
             console.log("failed");
@@ -101,8 +103,8 @@
         );
     };
 
-     setNodes();
-    ///////
+    graph.setNodes();
+ 
     graph.getLocation = function (val) {
         return $http.get('/api/autoskills', {
             params: {
@@ -114,15 +116,11 @@
             });
         });
     };
-    graph.filters = [];
+   
     graph.addFilter = function () {
-       
-        //console.log(graph.skill);
         graph.filters.push(graph.skill);
         setNodes();
         graph.skill = "";
-       // console.log(graph.force.nodes);
-      //  console.log(graph.force.links);
     };
 })
 .directive("skillgraph", function () {
