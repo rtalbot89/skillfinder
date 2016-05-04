@@ -50,9 +50,11 @@
 .controller("graphController", function ($http) {
     var graph = this;
     graph.filters = [];
-    graph.skill ="";
+    graph.skill = "";
+    graph.flag = false;
    
     graph.setNodes = function () {
+        graph.flag = false;
         if (graph.skill !== "") {
             graph.filters.push(graph.skill);
             graph.skill = "";
@@ -61,7 +63,6 @@
         $http.post("/api/skillsearch", graph.filters)
         .then(
         function (result) {
-            // console.log(result.data);
             graph.force = {};
             graph.force.nodes = [];
             graph.force.links = [];
@@ -96,6 +97,7 @@
                 }
                 nid++;
             });
+            graph.flag = true;
         },
         function () {
             console.log("failed");
@@ -125,7 +127,6 @@
 })
 .directive("skillgraph", function () {
     function dlink(scope, element, attrs) {
-        //console.log("directive runs");
         var width = 500,
         height = 400;
         var color = d3.scale.category20();
@@ -133,27 +134,18 @@
             .attr("width", width)
             .attr("height", height);
 
-        var nodes = [];
-        var links = [];
-
-        scope.$watch(function (newVal, oldVal, scope) {
-            //console.log(newVal);
-
-            if (newVal.links !== undefined && newVal.nodes !== undefined) {
-                nodes = [];
-                links = [];
+        scope.$watch(function (attrs) {
+            if (scope.links !== undefined && scope.nodes !== undefined && scope.flag === true) {
                 graphStart();
             }
-        }, true);
-
+        });
+       
         function graphStart() {
-            nodes = scope.nodes;
-            links = scope.links;
-            //console.log(nodes);
+            scope.flag = false;
 
             var force = d3.layout.force()
-                .nodes(nodes)
-                .links(links)
+                .nodes(scope.nodes)
+                .links(scope.links)
                 .charge(-120)
                 .linkDistance(50)
                 .size([width, height])
@@ -265,9 +257,9 @@
         restrict: 'E',
         scope: {
             nodes: '=nodes',
-            links: '=links'
+            links: '=links',
+            flag: '=flag'
         },
-        //templateUrl: '/scripts/app/partials/force.html',
         link: dlink
     };
 })
