@@ -52,7 +52,7 @@
     graph.filters = [];
     graph.skill = "";
     graph.flag = false;
-   
+
     graph.setNodes = function () {
         graph.flag = false;
         if (graph.skill !== "") {
@@ -106,7 +106,7 @@
     };
 
     graph.setNodes();
- 
+
     graph.getLocation = function (val) {
         return $http.get('/api/autoskills', {
             params: {
@@ -118,7 +118,7 @@
             });
         });
     };
-   
+
     graph.addFilter = function () {
         graph.filters.push(graph.skill);
         setNodes();
@@ -139,9 +139,11 @@
                 graphStart();
             }
         });
-       
+
         function graphStart() {
             scope.flag = false;
+            nodes = scope.nodes;
+            links = scope.links;
 
             var force = d3.layout.force()
                 .nodes(scope.nodes)
@@ -151,59 +153,34 @@
                 .size([width, height])
                 .on("tick", tick);
 
-            //console.log(links);
-            //console.log(nodes);
-            /*
-            force
-                .nodes(nodes)
-                .links(links)
-                .start();
-                */
-            /*
-            var drag = force.drag()
-                .on("dragstart", dragstart);
-            */
-
+            d3.selectAll(".node").remove();
             var link = svg.selectAll(".link");
-               // .data(links)
-               // .enter().append("line")
-               // .attr("class", "link");
-            //.style("stroke-width", 1);
-
             var node = svg.selectAll(".node");
-               // .data(nodes)
-                //.enter().append("circle")
-                //  .enter().append("g")
-               // .attr("class", "node")
-               // .style("fill", function (d) {
-               //     if (d.type === "user") {
-               //         return "#5731F2";
-               //     }
-
-               //     return "#30B5FF";
-
-               // })
-                //.attr("r", 10)
-                /*
-                .style("fill", function (d) {
-                   
-                    return color(d);
-                })
-                */
-                //.call(force.drag);
-           
-
-            //node.append("circle")
-            //.attr("r", 16);
 
             function start() {
                 link = link.data(force.links(), function (d) { return d.source + "-" + d.target; });
-
                 link.enter().insert("line", ".node").attr("class", "link");
                 link.exit().remove();
 
                 node = node.data(force.nodes(), function (d) { return d.id; });
-                node.enter().append("circle").attr("class", function (d) { return "node " + d.id; }).attr("r", 8);
+                var group = node.enter().append("g").attr("class", function (d) { return "node " + d.id; });
+                group.call(force.drag);
+
+                group.append("circle").attr("r", 10).attr("fill", function (d) {
+                    if (d.type === "user") {
+                        return "#5731F2";
+                    }
+                    return "#30B5FF";
+                });
+
+                group.append("image")
+                .attr("xlink:href", function (d) { return iconType(d); })
+                .attr("x", -8)
+                .attr("y", -9)
+                .attr("width", 16)
+                .attr("height", 16)
+                .append("title").text(function (d) { return d.name; });
+
                 node.exit().remove();
 
                 force.start();
@@ -211,45 +188,26 @@
 
             var iconType = function (d) {
                 if (d.type === "skill") {
-                    //console.log(d.type);
                     return "/content/hammer.png";
                 }
                 return "/content/personicon.png";
-
             };
-            /*
-            node.append("image")
-                .attr("xlink:href", function (d) { return iconType(d);})
-                .attr("x", -8)
-                .attr("y", -8)
-                .attr("width", 16)
-                .attr("height", 16);
-
-            node.append("title")
-                .text(function (d) { return d.name; });
-                */
 
             function tick() {
-                // nodes[0].x = width / 2;
-                // nodes[0].y = height / 2;
                 link.attr("x1", function (d) { return d.source.x; })
                     .attr("y1", function (d) { return d.source.y; })
                     .attr("x2", function (d) { return d.target.x; })
                     .attr("y2", function (d) { return d.target.y; });
 
-               // node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+                node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
 
+                /*
                 node.attr("cx", function (d) { return d.x; })
                     .attr("cy", function (d) { return d.y; });
-
+                    */
             }
 
             start();
-            /*
-            function dragstart(d) {
-                d3.select(this).classed("fixed", d.fixed = true);
-            }
-            */
         }
     }
 
@@ -264,5 +222,5 @@
     };
 })
     .factory("AutoSk", function ($resource) {
-     return $resource("/api/autoskills:id", { id: "@id" });
- });
+        return $resource("/api/autoskills:id", { id: "@id" });
+    });
