@@ -1,8 +1,9 @@
 ﻿body {
-    font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+   /* font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.6;
     color: #383838;
+       */
 }
 
 
@@ -90,8 +91,12 @@ input.ng-valid.ng-touched {
 }
 
 .navbar-inverse {
-    background-color: #3f4246;
+    /*background-color: #3f4246;
     border-color: #080808;
+        */
+   background-color: #445093;
+    border-color:  #445093;
+   
 }
 
 .navbar-inverse .navbar-nav > li > a {
