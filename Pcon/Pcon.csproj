@@ -240,7 +240,10 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\hammer.png" />
     <Content Include="Content\masthead-logo-bleed-sm.svg" />
+    <Content Include="Content\masthead-sm.svg" />
     <Content Include="Content\masthead.svg" />
+    <Content Include="Content\mono_1.jpg" />
+    <Content Include="Content\mono.jpg" />
     <Content Include="Content\personicon.png" />
     <Content Include="Content\select2.css" />
     <Content Include="Content\select2.png" />

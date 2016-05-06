@@ -118,4 +118,6 @@ body > div > div.jumbotron > ul > li > a {
   stroke-opacity: .6;
   stroke-width: 2px;
 }
+
+body { padding-top: 50px; }
  
