@@ -36,7 +36,7 @@
 })
 .controller("createController", function ($http, $location) {
     var myProfile = this;
-    myProfile.skills = ["Dinosaur chasing", "Rock breaking", "Flint axe making"];
+    myProfile.skills = [];
 
     //myProfile.name = "";
     //myProfile.organisation = "The quarry";

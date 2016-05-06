@@ -291,6 +291,7 @@
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\find.js" />
+    <Content Include="Scripts\app\partials\browseskills.html" />
     <Content Include="Scripts\app\partials\edit.html" />
     <Content Include="Scripts\app\partials\force.html" />
     <Content Include="Scripts\app\partials\graph.html" />
@@ -319,6 +320,11 @@
     <Content Include="Scripts\angular-aria.min.js.map" />
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Content\library_border_lhs_id7.jpg" />
+    <Content Include="docs\has_skill.csv" />
+    <Content Include="docs\ou.csv" />
+    <Content Include="docs\skills.csv" />
+    <Content Include="docs\users.csv" />
+    <Content Include="docs\works_in.csv" />
     <None Include="Properties\PublishProfiles\skillfinder.pubxml" />
     <Content Include="Scripts\d3\LICENSE" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

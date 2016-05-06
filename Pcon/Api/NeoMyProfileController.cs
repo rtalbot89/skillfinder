@@ -65,7 +65,7 @@ namespace Pcon.Api
                 .Match("(user:User)", "(ou:OU)")
                 .Where((User user) => user.Name == id.Name)
                 .AndWhere((OU ou) => ou.Name == id.Organisation)
-                .CreateUnique("user-[:WORKS_IN]->ou")
+                .CreateUnique("(user)-[:WORKS_IN]->(ou)")
                 .ExecuteWithoutResults();
 
             // A rudimentary way of adding skills and relationships
@@ -79,7 +79,7 @@ namespace Pcon.Api
                     .Merge("(skill:Skill { Name: {name} })")
                     .OnCreate()
                     .Set("skill = {newSkill}")
-                    .CreateUnique("user-[:HAS_SKILL]->skill")
+                    .CreateUnique("(user)-[:HAS_SKILL]->(skill)")
                     .WithParams(new
                     {
                         name = newSkill.Name,
@@ -134,7 +134,7 @@ namespace Pcon.Api
                         .Merge("(skill:Skill { Name: {name} })")
                         .OnCreate()
                         .Set("skill = {newSkill}")
-                        .CreateUnique("user-[:HAS_SKILL]->skill")
+                        .CreateUnique("(user)-[:HAS_SKILL]->(skill)")
                         .WithParams(new
                         {
                             name = newSkill.Name,

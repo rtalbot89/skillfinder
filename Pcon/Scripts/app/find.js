@@ -11,15 +11,26 @@
             controller: 'homeController',
             controllerAs: 'profiles'
         })
+          .when('/search/:q', {
+            templateUrl: '/Scripts/app/partials/home.html',
+            controller: 'homeController',
+            controllerAs: 'profiles'
+        })
         .when('/graph', {
             templateUrl: '/Scripts/app/partials/graph.html',
             controller: 'graphController',
             controllerAs: 'graph'
         })
+            .when('/skills', {
+                templateUrl: '/Scripts/app/partials/browseskills.html',
+                controller: 'listSkillsController',
+                controllerAs: 'skills'
+            })
       .otherwise({ redirectTo: '/' });
    })
-.controller("homeController", function ($http) {
+.controller("homeController", function ($http, $routeParams) {
     var profiles = this;
+   
     profiles.getLocation = function (val) {
         return $http.get('/api/autoskills', {
             params: {
@@ -37,14 +48,20 @@
        function (result) {
 
            profiles.searchResults = result.data;
-
+           /*
            profiles.searchResults.forEach(function (p) {
                p.Skills.push(p.qs);
            });
+           */
        },
        function () {
            console.log("failed");
        });
+    };
+
+    if ($routeParams.q) {
+        profiles.skill = $routeParams.q;
+        profiles.searchSkills();
     }
 })
 .controller("graphController", function ($http) {
@@ -124,11 +141,48 @@
         setNodes();
         graph.skill = "";
     };
+    graph.removeFilter = function (filter) {
+        //console.log(filter);
+        graph.filters.splice(graph.filters.indexOf(filter), 1);
+        graph.setNodes();
+
+    };
+})
+.controller("listSkillsController", function ($http) {
+    var skills = this;
+    skills.list = [];
+    skills.count = {};
+    $http.get('/api/skillsearch/').then(
+    function (result) {
+        //console.log(result.data);
+        result.data.forEach(function (d) {
+            d.skills.forEach(function (s) {
+                if (skills.count[s.Name] === undefined) {
+                    skills.count[s.Name] = 1;
+
+
+                } else {
+                    skills.count[s.Name] += 1;
+                }
+              
+                if (skills.list.indexOf(s.Name) === -1) {
+                    skills.list.push(s.Name);
+                }
+            });
+           
+        });
+        skills.list.sort();
+        console.log(skills.list);
+        console.log(skills.count);
+    },
+    function () {
+        console.log("failed");
+    });
 })
 .directive("skillgraph", function () {
     function dlink(scope, element, attrs) {
-        var width = 500,
-        height = 400;
+        var width = 600,
+        height = 450;
         var color = d3.scale.category20();
         var svg = d3.select(element[0]).append("svg")
             .attr("width", width)
