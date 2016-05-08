@@ -12,10 +12,10 @@
             controllerAs: 'profiles'
         })
           .when('/search/:q', {
-            templateUrl: '/Scripts/app/partials/home.html',
-            controller: 'homeController',
-            controllerAs: 'profiles'
-        })
+              templateUrl: '/Scripts/app/partials/home.html',
+              controller: 'homeController',
+              controllerAs: 'profiles'
+          })
         .when('/graph', {
             templateUrl: '/Scripts/app/partials/graph.html',
             controller: 'graphController',
@@ -28,9 +28,10 @@
             })
       .otherwise({ redirectTo: '/' });
    })
-.controller("homeController", function ($http, $routeParams) {
+.controller("homeController", function ($http, $routeParams, $filter, $scope) {
     var profiles = this;
-   
+    profiles.tags = [];
+    profiles.tagButtons = [];
     profiles.getLocation = function (val) {
         return $http.get('/api/autoskills', {
             params: {
@@ -44,15 +45,17 @@
     };
 
     profiles.searchSkills = function () {
-        $http.get('/api/skillsearch/', { params: { id: profiles.skill } }).then(
-       function (result) {
+        profiles.tagButtons = [];
+        if (profiles.skill !== "" && profiles.tags.indexOf(profiles.skill) === -1) {
+            profiles.tags.push(profiles.skill);
+        }
 
+        profiles.tagButtons = profiles.tags;
+
+        $http.post('/api/skillsearch', profiles.tags).then(
+       function (result) {
            profiles.searchResults = result.data;
-           /*
-           profiles.searchResults.forEach(function (p) {
-               p.Skills.push(p.qs);
-           });
-           */
+           profiles.skill = "";
        },
        function () {
            console.log("failed");
@@ -63,6 +66,16 @@
         profiles.skill = $routeParams.q;
         profiles.searchSkills();
     }
+
+    profiles.removeTag = function (index, tag) {
+        profiles.skill = "";
+        profiles.tags = $filter('filter')(profiles.tags, function (d) { return d !== tag; });
+        if (profiles.tags.length > 0) {
+            profiles.searchSkills();
+        } else {
+            profiles.searchResults = [];
+        }
+    };
 })
 .controller("graphController", function ($http) {
     var graph = this;
@@ -72,6 +85,10 @@
 
     graph.setNodes = function () {
         graph.flag = false;
+        if (graph.skill !== "" && graph.filters.indexOf(graph.skill) !== -1) {
+            graph.skill = "";
+            return;
+        }
         if (graph.skill !== "") {
             graph.filters.push(graph.skill);
             graph.skill = "";
@@ -80,27 +97,55 @@
         $http.post("/api/skillsearch", graph.filters)
         .then(
         function (result) {
+            //console.log(result.data);
             graph.force = {};
             graph.force.nodes = [];
             graph.force.links = [];
             var index = 0;
             var nodeTracker = [];
-            for (var i = 0 ; i < result.data.length; i++) {
-                var d = result.data[i];
-                nodeTracker.push({ user: d.user.Name });
-                var userId = nodeTracker.length - 1;
 
-                for (var j = 0; j < d.skills.length; j++) {
-                    var s = d.skills[j];
-                    var skillId;
-                    var hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
-                    if (hasId === -1) {
-                        nodeTracker.push({ skill: s.Name });
-                        skillId = nodeTracker.length - 1;
-                    } else {
-                        skillId = hasId;
+            // Only do this if showing the whole thing
+            if (graph.filters.length === 0) {
+                for (var i = 0 ; i < result.data.length; i++) {
+                    var d = result.data[i];
+                    nodeTracker.push({ user: d.user.Name });
+                    var userId = nodeTracker.length - 1;
+
+                    for (var j = 0; j < d.skills.length; j++) {
+                        var s = d.skills[j];
+                        var skillId;
+                        var hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
+                        if (hasId === -1) {
+                            nodeTracker.push({ skill: s.Name });
+                            skillId = nodeTracker.length - 1;
+                        } else {
+                            skillId = hasId;
+                        }
+                        graph.force.links.push({ source: userId, target: skillId });
                     }
-                    graph.force.links.push({ source: userId, target: skillId });
+                }
+            }
+
+            // do this if there are filters
+            if (graph.filters.length > 0) {
+                for (var i = 0 ; i < result.data.length; i++) {
+                    var d = result.data[i];
+                    nodeTracker.push({ user: d.user.Name });
+                    var userId = nodeTracker.length - 1;
+                    for (var m = 0; m < d.skills.length; m++) {
+                        if (graph.filters.indexOf(d.skills[m].Name) !== -1) {
+                            var s = d.skills[m];
+                            var skillId;
+                            var hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
+                            if (hasId === -1) {
+                                nodeTracker.push({ skill: s.Name });
+                                skillId = nodeTracker.length - 1;
+                            } else {
+                                skillId = hasId;
+                            }
+                            graph.force.links.push({ source: userId, target: skillId });
+                        }
+                    }
                 }
             }
 
@@ -137,8 +182,10 @@
     };
 
     graph.addFilter = function () {
-        graph.filters.push(graph.skill);
-        setNodes();
+        if (graph.filters.indexOf(graph.skill) === -1) {
+            graph.filters.push(graph.skill);
+            setNodes();
+        }
         graph.skill = "";
     };
     graph.removeFilter = function (filter) {
@@ -164,12 +211,12 @@
                 } else {
                     skills.count[s.Name] += 1;
                 }
-              
+
                 if (skills.list.indexOf(s.Name) === -1) {
                     skills.list.push(s.Name);
                 }
             });
-           
+
         });
         skills.list.sort();
         console.log(skills.list);
@@ -182,11 +229,23 @@
 .directive("skillgraph", function () {
     function dlink(scope, element, attrs) {
         var width = 600,
-        height = 450;
+        height = 350;
         var color = d3.scale.category20();
+        /*
         var svg = d3.select(element[0]).append("svg")
             .attr("width", width)
             .attr("height", height);
+            */
+
+        var svg = d3.select(element[0])
+        .append("div")
+        .classed("svg-container", true) //container class to make it responsive
+        .append("svg")
+        //responsive SVG needs these 2 attributes and no width and height attr
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 900 360")
+        //class to make it responsive
+        .classed("svg-content-responsive", true);
 
         scope.$watch(function (attrs) {
             if (scope.links !== undefined && scope.nodes !== undefined && scope.flag === true) {
@@ -229,10 +288,10 @@
 
                 group.append("image")
                 .attr("xlink:href", function (d) { return iconType(d); })
-                .attr("x", -8)
-                .attr("y", -9)
-                .attr("width", 16)
-                .attr("height", 16)
+                .attr("x", -10)
+                .attr("y", -10)
+                .attr("width", 20)
+                .attr("height", 20)
                 .append("title").text(function (d) { return d.name; });
 
                 node.exit().remove();
@@ -242,9 +301,9 @@
 
             var iconType = function (d) {
                 if (d.type === "skill") {
-                    return "/content/hammer.png";
+                    return "/content/hammer-circle.png";
                 }
-                return "/content/personicon.png";
+                return "/content/person-circle.png";
             };
 
             function tick() {

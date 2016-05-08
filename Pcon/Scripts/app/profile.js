@@ -91,7 +91,7 @@
             }
             else {
                 viewProfile.data = result.data[0];
-                console.log(viewProfile.data);
+                //console.log(viewProfile.data);
                 //viewProfile.data.Skills.sort();
                 viewProfile.skills = viewProfile.data.Skills.map(function (s) { return s.Name }).sort();
                 viewProfile.isProfile = true;
@@ -158,6 +158,7 @@
                     scope.skills.sort();
                 }
                 scope.skill = "";
+                scope.noResults = false;
             };
 
             // Any function returning a promise object can be used to load values asynchronously

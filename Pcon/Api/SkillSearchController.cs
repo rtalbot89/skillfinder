@@ -49,11 +49,16 @@ namespace Pcon.Api
                 var profile = graphClient.Cypher
                 .Match("(user:User)-[:HAS_SKILL]->(s) WHERE s.Name IN {skillList}")
                 .WithParam("skillList", id)
-                .Return((user, s)
+                .With("user")
+                .Match("(user)-[:HAS_SKILL]->(userskill:Skill)")
+                .With("user, userskill")
+                .Match("(user)-[:WORKS_IN]->(ou:OU)")
+                .Return((user, userskill, ou)
                 => new
                 {
                     user = user.As<User>(),
-                    skills = s.CollectAs<User>()
+                    skills = userskill.CollectAsDistinct<User>(),
+                    OU = ou.As<User>()
                 }
                 )
                 .Results;

@@ -1,9 +1,8 @@
-﻿<h2>Connect people by skills</h2>
-<div class="col-md-3">
+﻿<div class="col-md-12">
     <form ng-submit="graph.searchSkills()">
         <div class="form-group">
             <label for="skill">
-                Filter by skill
+                Connect people by skill
             </label>
             <input type="text" autocomplete="off" ng-model="graph.skill" id="skill"
                    uib-typeahead="address for address in graph.getLocation($viewValue)"
@@ -15,20 +14,37 @@
                    class="form-control">
         </div>
     </form>
-    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-    <div ng-show="noResults">
+   <!--<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>-->
+    
+    <div style="min-height:40px;width:100%;" ng-show="noResults">
         <i class="glyphicon glyphicon-remove"></i> No Results Found
     </div>
-    <p ng-show="graph.filters.length === 0 && noResults !== true">Showing all</p>
+     
+    <div style="min-height:40px;width:100%;" ng-show="graph.filters.length === 0 && noResults !== true">Showing all</div>
+    <div style="min-height:40px;width:100%;" ng-show="graph.filters.length > 0">
+        <span ng-repeat="filter in graph.filters">
+      
+        <button class="btn btn-default btn-sm" ng-click="graph.removeFilter(filter)">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            {{filter}}
+        </button>
+            </span>
+    </div>
+   
+    <!--
     <ul class="list-unstyled">
         <li ng-repeat="filter in graph.filters"><button class="btn btn-default btn-block" ng-click="graph.removeFilter(filter)">{{filter}}
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button></li>
     </ul>
+        -->
+  
+
+
+
     </div>
+<div class="col-md-12">
+    <skillGraph links="graph.force.links" nodes="graph.force.nodes" flag="graph.flag"></skillGraph>
 
-
-
-<div class="col-md-9">
-<skillGraph links="graph.force.links" nodes="graph.force.nodes" flag="graph.flag"></skillGraph>
 </div>
+

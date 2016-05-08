@@ -120,4 +120,42 @@ body > div > div.jumbotron > ul > li > a {
 }
 
 body { padding-top: 50px; }
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 40%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+   /*background-color: yellow;*/
+   border: 1px solid rgb(204, 204, 204);
+   border-radius: 4px;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: 0;
+}
+
+.jumbotron {
+    background-color:#755CFF;
+    color:white;
+}
+
+@media (min-width: 768px) {
+    .jumbotron {
+        position: relative;
+        background: #000 url("sfbanner-2.svg") center center;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        overflow: hidden;
+         background-color:#755CFF;
+    color:white;
+    }
+}
+
+
  

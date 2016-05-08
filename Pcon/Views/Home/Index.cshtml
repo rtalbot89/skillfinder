@@ -1,21 +1,18 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-<div class="jumbotron" style="background-image: url('../../Content/skillfinder.png');background-color:#755CFF;color:white; background-repeat: no-repeat; ">
-   
-        <h1>Skill finder</h1>
+<div class="jumbotron">
     <ul class="list-unstyled">
         <li><a href="#">@Html.ActionLink("Search skills", "Index", "Profile")</a></li>
-        <li><a href="#">Browse and explore skills</a></li>
-        <li><a href="#">Search people</a></li>
-        <li><a href="#">Browse people</a></li>
-        <li><a href="#">Create your profile</a></li>
+        <li><a href="/profile/#/graph">Visualise connections</a></li>
+        <li><a href="/profile/#/skills">Browse skills</a></li>
+        <li><a href="/Account/Register">Register and create a profile</a></li>
     </ul>
 </div>
 <div class="container">
 <div class="col-md-12">
     <h2>How it works</h2>
-    <p>Users can create a profile listing their skills. Other people who need these skills can search and browse for them.</p>
+    <p>Users list their skills. Other people who need these skills can search and browse for them.</p>
 </div>
     </div>
 
