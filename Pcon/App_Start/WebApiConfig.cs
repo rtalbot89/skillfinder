@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using Neo4jClient;
 using System.Configuration;
+using Neo4jClient.Transactions;
 
 namespace Pcon
 {
@@ -32,6 +33,6 @@ namespace Pcon
             GraphClient = client;
         }
 
-        public static IGraphClient GraphClient { get; private set; }
+        public static ITransactionalGraphClient GraphClient { get; private set; }
     }
 }
