@@ -65,7 +65,6 @@ namespace Pcon.DAL
             return profile;
         }
 
-
         public IEnumerable AllUsersWithSkills()
         {
             var profiles = _graphClient.Cypher
@@ -138,7 +137,7 @@ namespace Pcon.DAL
         public void CreateProfile(Profile id, string userName)
         {
 
-            var newUser = new { Name = id.Name, UserName = userName };
+            var newUser = new { id.Name, UserName = userName };
             var organisation = new { Name = id.Organisation };
            _graphClient.Cypher
                 .Merge("(user:User { UserName: {username} })")
@@ -186,6 +185,28 @@ namespace Pcon.DAL
                     })
                     .ExecuteWithoutResults();
             }
+        }
+
+        public IEnumerable OrgSuggest(string query)
+        {
+            var suggestions = _graphClient.Cypher
+               .Match("(ou:OU) WHERE ou.Name =~ { q } ")
+               .WithParam("q", "(?i).*" + query + ".*")
+               .Return((ou) => new { OU = ou.CollectAs<OU>() })
+               .Results;
+
+            return suggestions.ToList().ElementAt(0).OU.OrderBy(o => o.Name);
+        }
+
+        public IEnumerable SkillSuggest(string query)
+        {
+            var suggestions = _graphClient.Cypher
+               .Match("(skill:Skill) WHERE skill.Name =~ { q } ")
+               .WithParam("q", "(?i).*" + query + ".*")
+               .Return((skill) => new { Skills = skill.CollectAs<Skill>() })
+               .Results;
+
+            return suggestions.ToList().ElementAt(0).Skills.OrderBy(o => o.Name);
         }
     }
 }
