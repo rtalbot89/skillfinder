@@ -205,7 +205,6 @@
   <ItemGroup>
     <Compile Include="Api\AutoOrgController.cs" />
     <Compile Include="Api\AutoSkillsController.cs" />
-    <Compile Include="Api\Neo4jController.cs" />
     <Compile Include="Api\NeoMyProfileController.cs" />
     <Compile Include="Api\SkillSearchController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
