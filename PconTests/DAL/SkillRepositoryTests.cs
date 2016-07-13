@@ -32,22 +32,20 @@ namespace PconTests.DAL
         {
             _graphClient = new GraphClient(new Uri("http://localhost:7474/db/data"),"neo4j", "t3ng0que");
             _graphClient.Connect();
-
             _repository = new SkillRepository(_graphClient);
+        }
 
+        [Test()]
+        public void AllUsersAndOusTest()
+        {
             var ou = new OU { Id = 1, Name = "testou" };
-            var user = new User { Id = 1, Name = "test user", UserName = "tuser"};
+            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
             var skill = new Skill { Id = 1, Name = "test skill" };
 
             _graphClient.Cypher
                .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
                .WithParams(new { skill, user, ou })
                .ExecuteWithoutResults();
-        }
-
-        [Test()]
-        public void AllUsersAndOusTest()
-        {
             var result = _repository.AllUsersAndOus();
 
             Assert.IsNotNull(result);
@@ -56,6 +54,14 @@ namespace PconTests.DAL
         [Test()]
         public void GetProfileFromIdTest()
         {
+            var ou = new OU { Id = 1, Name = "testou" };
+            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
+            var skill = new Skill { Id = 1, Name = "test skill" };
+            _graphClient.Cypher
+            .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
+            .WithParams(new { skill, user, ou })
+            .ExecuteWithoutResults();
+
             var result = _repository.GetProfileFromId("1");
 
             Assert.IsNotNull(result);
@@ -68,6 +74,14 @@ namespace PconTests.DAL
         [Test()]
         public void GetProfileFromUserNameTest()
         {
+            var ou = new OU { Id = 1, Name = "testou" };
+            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
+            var skill = new Skill { Id = 1, Name = "test skill" };
+            _graphClient.Cypher
+            .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
+            .WithParams(new { skill, user, ou })
+            .ExecuteWithoutResults();
+
             var result = _repository.GetProfileFromUserName("tuser");
 
             Assert.IsNotNull(result);
@@ -80,6 +94,14 @@ namespace PconTests.DAL
         [Test()]
         public void AllUsersWithSkillsTest()
         {
+            var ou = new OU { Id = 1, Name = "testou" };
+            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
+            var skill = new Skill { Id = 1, Name = "test skill" };
+            _graphClient.Cypher
+            .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
+            .WithParams(new { skill, user, ou })
+            .ExecuteWithoutResults();
+
             var result = _repository.AllUsersWithSkills();
 
             Assert.IsNotNull(result);
@@ -88,6 +110,14 @@ namespace PconTests.DAL
         [Test()]
         public void GetUserWithSkillsTest()
         {
+            var ou = new OU { Id = 1, Name = "testou" };
+            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
+            var skill = new Skill { Id = 1, Name = "test skill" };
+            _graphClient.Cypher
+            .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
+            .WithParams(new { skill, user, ou })
+            .ExecuteWithoutResults();
+
             var result = _repository.GetUserWithSkills("test skill");
 
             Assert.IsNotNull(result);
@@ -100,6 +130,14 @@ namespace PconTests.DAL
         [Test()]
         public void UserHasSkillsTest()
         {
+            var ou = new OU { Id = 1, Name = "testou" };
+            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
+            var skill = new Skill { Id = 1, Name = "test skill" };
+            _graphClient.Cypher
+            .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
+            .WithParams(new { skill, user, ou })
+            .ExecuteWithoutResults();
+
             var skills = new[] {"test skill", "x skill"};
             var result = _repository.UserHasSkills(skills);
 
@@ -114,6 +152,14 @@ namespace PconTests.DAL
         [Test()]
         public void UsersAllSkillsTest()
         {
+            var ou = new OU { Id = 1, Name = "testou" };
+            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
+            var skill = new Skill { Id = 1, Name = "test skill" };
+            _graphClient.Cypher
+            .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
+            .WithParams(new { skill, user, ou })
+            .ExecuteWithoutResults();
+
             var result = _repository.UsersAllSkills();
 
             Assert.IsNotNull(result);
