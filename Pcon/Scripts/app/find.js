@@ -1,75 +1,89 @@
-﻿angular.module("find", ['ngRoute', 'ui.bootstrap'])
-   .config(function ($routeProvider, $locationProvider) {
-       $routeProvider
-       .when("/list", {
-           templateUrl: "/Scripts/app/partials/home.html",
-           controller: "homeController",
-           controllerAs: 'myProfiles'
-       })
-        .when('/', {
-            templateUrl: '/Scripts/app/partials/home.html',
-            controller: 'homeController',
-            controllerAs: 'profiles'
-        })
-          .when('/search/:q', {
-              templateUrl: '/Scripts/app/partials/home.html',
-              controller: 'homeController',
-              controllerAs: 'profiles'
-          })
-        .when('/graph', {
-            templateUrl: '/Scripts/app/partials/graph.html',
-            controller: 'graphController',
-            controllerAs: 'graph'
-        })
-            .when('/skills', {
-                templateUrl: '/Scripts/app/partials/browseskills.html',
-                controller: 'listSkillsController',
-                controllerAs: 'skills'
+﻿angular.module("find", ["ngRoute","ngResource", "ui.bootstrap"])
+    .config(function ($routeProvider) {
+        $routeProvider
+            .when("/find", {
+                templateUrl: "/Scripts/app/partials/home.html",
+                controller: "homeController",
+                controllerAs: "profiles"
             })
-      .otherwise({ redirectTo: '/' });
-   })
-.controller("homeController", function ($http, $routeParams, $filter, $scope) {
-    var profiles = this;
-    profiles.tags = [];
-    profiles.tagButtons = [];
-    profiles.getLocation = function (val) {
-        return $http.get('/api/autoskills', {
-            params: {
-                query: val
-            }
-        }).then(function (response) {
-            return response.data.map(function (item) {
-                return item.Name;
+            .when("/", {
+                templateUrl: "/Scripts/app/partials/graph.html",
+                controller: "graphController",
+                controllerAs: "graph"
+            })
+            .when("/skills", {
+                templateUrl: "/Scripts/app/partials/browseskills.html",
+                controller: "listSkillsController",
+                controllerAs: "skills"
+            })
+            .when("/profiles/:q", {
+                 templateUrl: "/Scripts/app/partials/home.html",
+                 controller: "homeController",
+                 controllerAs: "profiles"
+            })
+              .when("/profiles", {
+            templateUrl: "/Scripts/app/partials/allprofiles.html",
+            controller: "profileController",
+            controllerAs: "allProfiles"
+        })
+         .when("/create", {
+             templateUrl: "/Scripts/app/partials/new.html",
+             controller: "createController",
+             controllerAs: "myProfile"
+         })
+         .when("/myprofile", {
+             templateUrl: "/Scripts/app/partials/view.html",
+             controller: "viewMyController",
+             controllerAs: "viewProfile"
+         })
+          .when("/profiles/:id/edit", {
+              templateUrl: "/Scripts/app/partials/edit.html",
+              controller: "editController",
+              controllerAs: "editProfile"
+          })
+            .otherwise({ redirectTo: "/" });
+    })
+    .controller("homeController", function ($http, $routeParams, $filter) {
+        var profiles = this;
+        profiles.tags = [];
+
+        profiles.getLocation = function (val) {
+            return $http.get("/api/autoskills", {
+                params: {
+                    query: val
+                }
+            }).then(function (response) {
+                return response.data.map(function (item) {
+                    return item.Name;
+                });
             });
-        });
-    };
+        };
 
-    profiles.searchSkills = function () {
-        profiles.tagButtons = [];
-        if (profiles.skill !== "" && profiles.tags.indexOf(profiles.skill) === -1) {
-            profiles.tags.push(profiles.skill);
+        profiles.searchSkills = function () {
+            // Check for duplicate skills
+            if (profiles.skill !== "" && profiles.tags.indexOf(profiles.skill) === -1) {
+                profiles.tags.push(profiles.skill);
+            }
+
+            $http.post("/api/skillsearch", profiles.tags).then(
+                function (result) {
+                    profiles.searchResults = result.data;
+                    profiles.skill = "";
+                },
+                function () {
+                    console.log("failed");
+                });
+        };
+
+        // Search from a link
+        if ($routeParams.q) {
+            profiles.skill = $routeParams.q;
+            profiles.searchSkills();
         }
-
-        profiles.tagButtons = profiles.tags;
-
-        $http.post('/api/skillsearch', profiles.tags).then(
-       function (result) {
-           profiles.searchResults = result.data;
-           profiles.skill = "";
-       },
-       function () {
-           console.log("failed");
-       });
-    };
-
-    if ($routeParams.q) {
-        profiles.skill = $routeParams.q;
-        profiles.searchSkills();
-    }
 
     profiles.removeTag = function (index, tag) {
         profiles.skill = "";
-        profiles.tags = $filter('filter')(profiles.tags, function (d) { return d !== tag; });
+        profiles.tags = $filter("filter")(profiles.tags, function (d) { return d !== tag; });
         if (profiles.tags.length > 0) {
             profiles.searchSkills();
         } else {
@@ -97,24 +111,26 @@
         $http.post("/api/skillsearch", graph.filters)
         .then(
         function (result) {
-            //console.log(result.data);
             graph.force = {};
             graph.force.nodes = [];
             graph.force.links = [];
-            var index = 0;
             var nodeTracker = [];
 
             // Only do this if showing the whole thing
+            var i;
+            var d;
+            var userId;
+            var s;
+            var skillId;
+            var hasId;
             if (graph.filters.length === 0) {
-                for (var i = 0 ; i < result.data.length; i++) {
-                    var d = result.data[i];
+                for (i = 0; i < result.data.length; i++) {
+                    d = result.data[i];
                     nodeTracker.push({ user: d.user.Name });
-                    var userId = nodeTracker.length - 1;
-
+                    userId = nodeTracker.length - 1;
                     for (var j = 0; j < d.skills.length; j++) {
-                        var s = d.skills[j];
-                        var skillId;
-                        var hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
+                        s = d.skills[j];
+                        hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
                         if (hasId === -1) {
                             nodeTracker.push({ skill: s.Name });
                             skillId = nodeTracker.length - 1;
@@ -128,15 +144,14 @@
 
             // do this if there are filters
             if (graph.filters.length > 0) {
-                for (var i = 0 ; i < result.data.length; i++) {
-                    var d = result.data[i];
+                for (i = 0; i < result.data.length; i++) {
+                    d = result.data[i];
                     nodeTracker.push({ user: d.user.Name });
-                    var userId = nodeTracker.length - 1;
+                    userId = nodeTracker.length - 1;
                     for (var m = 0; m < d.skills.length; m++) {
                         if (graph.filters.indexOf(d.skills[m].Name) !== -1) {
-                            var s = d.skills[m];
-                            var skillId;
-                            var hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
+                            s = d.skills[m];
+                            hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
                             if (hasId === -1) {
                                 nodeTracker.push({ skill: s.Name });
                                 skillId = nodeTracker.length - 1;
@@ -170,7 +185,7 @@
     graph.setNodes();
 
     graph.getLocation = function (val) {
-        return $http.get('/api/autoskills', {
+        return $http.get("/api/autoskills", {
             params: {
                 query: val
             }
@@ -189,25 +204,21 @@
         graph.skill = "";
     };
     graph.removeFilter = function (filter) {
-        //console.log(filter);
         graph.filters.splice(graph.filters.indexOf(filter), 1);
         graph.setNodes();
-
     };
 })
 .controller("listSkillsController", function ($http) {
     var skills = this;
     skills.list = [];
     skills.count = {};
-    $http.get('/api/skillsearch/').then(
+    $http.get("/api/skillsearch/").then(
     function (result) {
-        //console.log(result.data);
         result.data.forEach(function (d) {
             d.skills.forEach(function (s) {
+
                 if (skills.count[s.Name] === undefined) {
                     skills.count[s.Name] = 1;
-
-
                 } else {
                     skills.count[s.Name] += 1;
                 }
@@ -216,26 +227,25 @@
                     skills.list.push(s.Name);
                 }
             });
-
         });
         skills.list.sort();
-        console.log(skills.list);
-        console.log(skills.count);
     },
     function () {
         console.log("failed");
     });
 })
 .directive("skillgraph", function () {
-    function dlink(scope, element, attrs) {
+
+    var iconType = function (d) {
+        if (d.type === "skill") {
+            return "/content/hammer-circle.png";
+        }
+        return "/content/person-circle.png";
+    };
+
+    function dlink(scope, element) {
         var width = 600,
         height = 350;
-        var color = d3.scale.category20();
-        /*
-        var svg = d3.select(element[0]).append("svg")
-            .attr("width", width)
-            .attr("height", height);
-            */
 
         var svg = d3.select(element[0])
         .append("div")
@@ -247,7 +257,7 @@
         //class to make it responsive
         .classed("svg-content-responsive", true);
 
-        scope.$watch(function (attrs) {
+        scope.$watch(function () {
             if (scope.links !== undefined && scope.nodes !== undefined && scope.flag === true) {
                 graphStart();
             }
@@ -255,8 +265,6 @@
 
         function graphStart() {
             scope.flag = false;
-            nodes = scope.nodes;
-            links = scope.links;
 
             var force = d3.layout.force()
                 .nodes(scope.nodes)
@@ -299,13 +307,6 @@
                 force.start();
             }
 
-            var iconType = function (d) {
-                if (d.type === "skill") {
-                    return "/content/hammer-circle.png";
-                }
-                return "/content/person-circle.png";
-            };
-
             function tick() {
                 link.attr("x1", function (d) { return d.source.x; })
                     .attr("y1", function (d) { return d.source.y; })
@@ -313,23 +314,17 @@
                     .attr("y2", function (d) { return d.target.y; });
 
                 node.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
-
-                /*
-                node.attr("cx", function (d) { return d.x; })
-                    .attr("cy", function (d) { return d.y; });
-                    */
             }
-
             start();
         }
     }
 
     return {
-        restrict: 'E',
+        restrict: "E",
         scope: {
-            nodes: '=nodes',
-            links: '=links',
-            flag: '=flag'
+            nodes: "=nodes",
+            links: "=links",
+            flag: "=flag"
         },
         link: dlink
     };

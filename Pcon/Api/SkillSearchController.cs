@@ -4,6 +4,7 @@ using Pcon.DAL;
 
 namespace Pcon.Api
 {
+    // Find profiles with skills
     public class SkillSearchController : ApiController
     {
         private readonly SkillRepository _skillRepository;
@@ -19,28 +20,25 @@ namespace Pcon.Api
             _skillRepository = new SkillRepository(graphClient);
         }
 
-        public IHttpActionResult Get(string id)
-        {
-            var profile = _skillRepository.GetUserWithSkills(id);
-            return Ok(profile);
-        }
+        //Return a single profile from a query for one skill
+        //public IHttpActionResult Get(string id)
+        //{
+        //    var profile = _skillRepository.GetUserWithSkills(id);
+        //    return Ok(profile);
+        //}
 
+        // Get all profiles and skills
         public IHttpActionResult Get()
         {
             var profiles = _skillRepository.AllUsersWithSkills();
             return Ok(profiles);
         }
 
-        public IHttpActionResult Post(string[] id)
+        // From POST return profiles matching a selection of skills
+        // or all users and skills if the list of skills is empty
+        public IHttpActionResult Post(string[] skills)
         {
-            if (id.Length > 0)
-            {
-                var profile = _skillRepository.UserHasSkills(id);
-                return Ok(profile);
-            }
-
-            var profiles = _skillRepository.AllUsersWithSkills();
-            return Ok(profiles);
+            return Ok(skills.Length > 0 ? _skillRepository.UserHasSkills(skills) : _skillRepository.AllUsersWithSkills());
         }
     }
 }

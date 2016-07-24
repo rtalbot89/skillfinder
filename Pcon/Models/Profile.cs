@@ -7,8 +7,8 @@ namespace Pcon.Models
 {
     public class Profile
     {
-        public string Name { get; set;}
-        public string Organisation { get; set; }
-        public ICollection<string> Skills { get; set; }
+        public User User { get; set; }
+        public ClientNode Ou { get; set; }
+        public IEnumerable<ClientNode> Skills { get; set; }
     }
 }

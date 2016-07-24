@@ -1,79 +1,30 @@
-﻿angular.module("profile", ['ngRoute', 'ui.bootstrap'])
-    .config(function ($routeProvider, $locationProvider) {
-        $routeProvider
-        .when("/list", {
-            templateUrl: "/Scripts/app/partials/home.html",
-            controller: "homeController",
-            controllerAs: 'myProfiles'
-        })
-         .when('/create', {
-             templateUrl: '/Scripts/app/partials/new.html',
-             controller: 'createController',
-             controllerAs: 'myProfile'
-         })
-         .when('/', {
-             templateUrl: '/Scripts/app/partials/view.html',
-             controller: 'viewMyController',
-             controllerAs: 'viewProfile'
-         })
-          .when('/edit', {
-              templateUrl: '/Scripts/app/partials/edit.html',
-              controller: 'editController',
-              controllerAs: 'editProfile'
-          })
-       .otherwise({ redirectTo: '/' });
+﻿angular.module("find")
+.controller("profileController", function ($http, profileApi) {
+    var profiles = this;
+        profiles.list = profileApi.query();
     })
-.controller("homeController", function ($http) {
-    var myProfiles = this;
-    $http.get("/api/neo4j").then(
-         function (result) {
-             console.log(result.data);
-             myProfiles.ouList = result.data;
-         },
-        function () {
-            console.log("failed");
-        });
-})
-.controller("createController", function ($http, $location) {
+.controller("createController", function ($http, $location, orgSuggest, profileApi) {
     var myProfile = this;
-    myProfile.skills = [];
-
-    //myProfile.name = "";
-    //myProfile.organisation = "The quarry";
+    myProfile.data = {
+        User: {},
+        Ou: {},
+        Skills : []
+    };
 
     // Autocomplete OU
     myProfile.getLocation = function (val) {
-        return $http.get('/api/autoorg', {
-            params: {
-                query: val
-            }
-        }).then(function (response) {
-            return response.data.map(function (item) {
-                return item.Name;
-            });
-        });
+        return orgSuggest(val);
     };
 
-    myProfile.update = function (form) {
-        console.log(form);
-        var data = {};
-        data.Skills = myProfile.skills;
-        data.Name = myProfile.name;
-        data.Organisation = myProfile.organisation;
-
-        $http.post('/api/neomyprofile', data).then(
-            function () {
-                $location.path('/view/' + data.Name);
-            },
-            function () {
-                alert("failed");
-            }
-            );
+    myProfile.update = function () {
+        profileApi.save(myProfile.data,function() {
+            $location.path("/profiles");
+        });
     };
 })
 .controller("viewController", function ($http, $routeParams) {
     var viewProfile = this;
-    $http.get('/api/neo4j/' + $routeParams.id).then(
+    $http.get("/api/neo4j/" + $routeParams.id).then(
         function (result) {
             viewProfile.data = result.data[0];
             viewProfile.data.Skills.sort();
@@ -82,18 +33,16 @@
             alert("failed");
         });
 })
-.controller("viewMyController", function ($http, $routeParams) {
+.controller("viewMyController", function ($http) {
     var viewProfile = this;
-    $http.get('/api/neomyprofile/').then(
+    $http.get("/api/neomyprofile/").then(
         function (result) {
             if (result.data.length === 0) {
                 viewProfile.isProfile = false;
             }
             else {
                 viewProfile.data = result.data[0];
-                //console.log(viewProfile.data);
-                //viewProfile.data.Skills.sort();
-                viewProfile.skills = viewProfile.data.Skills.map(function (s) { return s.Name }).sort();
+                viewProfile.skills = viewProfile.data.Skills.map(function (s) { return s.Name; }).sort();
                 viewProfile.isProfile = true;
             }
         },
@@ -101,46 +50,60 @@
             console.log("failed");
         });
 })
-.controller("editController", function ($http, $routeParams, $location, $window) {
+.controller("editController", function ($http, $routeParams, $location, profileApi, orgSuggest) {
     var editProfile = this;
-    $http.get('/api/neomyprofile/').then(
-        function (result) {
-            editProfile.data = result.data[0];
-            editProfile.skills = editProfile.data.Skills.map(function (s) { return s.Name; });
-            editProfile.skills.sort();
-        },
-        function () {
-            console.log("failed");
-        });
+    editProfile.data = profileApi.get({ id: $routeParams.id });
+
+     // Autocomplete OU
+    editProfile.getLocation = function (val) {
+        return orgSuggest(val);
+    };
 
     editProfile.update = function () {
-        var data = {};
-        data.Name = editProfile.data.User.Name;
-        data.Organisation = editProfile.data.OU.Name;
-        data.skills = editProfile.skills;
-        $http.put('/api/neomyprofile', data).then(
+        profileApi.update(editProfile.data,
             function () {
-                $location.path('/view/' + data.Name);
-            },
-            function () {
-                console.log('failed');
-            }
-        );
+                $location.path("/profiles");
+            });
     };
 
     editProfile.cancel = function () {
-        $window.history.back();
+        $location.path("/profiles");
     };
 })
-.directive('skills', function ($http) {
+    .controller("deleteController", function() {
+        var profile = this;
+
+    })
+.factory("profileApi", ["$resource", function($resource) {
+    return $resource("/api/neomyprofile", null,
+        {
+            "update": { method:"PUT" }
+        });
+}])
+    .factory("orgSuggest", ["$http", function($http) {
+        return function(val) {
+            return $http.get("/api/autoorg",
+                {
+                    params: {
+                        query: val
+                    }
+                })
+                .then(function(response) {
+                    return response.data.map(function(item) {
+                        return item.Name;
+                    });
+                });
+        };
+    }])
+.directive("skills", function ($http) {
 
     return {
-        restrict: 'E',
+        restrict: "E",
         scope: {
-            skills: '=skillList'
+            skills: "=skillList"
         },
-        templateUrl: '/Scripts/app/partials/skills.html',
-        link: function (scope, element, attrs) {
+        templateUrl: "/Scripts/app/partials/skills.html",
+        link: function (scope) {
             scope.removeSkill = function (skill) {
                 scope.skills.splice(scope.skills.indexOf(skill), 1);
             };
@@ -150,20 +113,30 @@
             }
 
             scope.addSkill = function () {
-                // ensure we aren't trying to add duplicates
-                if (scope.skills.indexOf(scope.skill) === -1 && scope.skill !== "" && scope.skill !== undefined) {
-                    //console.log(scope.skill);
-                    scope.skill = capitalizeFirstLetter(scope.skill);
-                    scope.skills.push(scope.skill);
-                    scope.skills.sort();
+                var exists = false;
+                if (scope.skill === "" || scope.skill === undefined) {
+                    return;
                 }
+                scope.skill = capitalizeFirstLetter(scope.skill);
+                // ensure we aren't trying to add duplicates to a profile
+                for (var i = 0; i < scope.skills.length; i += 1) {
+                    if (scope.skills[i].Name === scope.skill) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (exists === false) {
+                    scope.skills.push({ Name: scope.skill });
+                }
+
                 scope.skill = "";
                 scope.noResults = false;
             };
 
             // Any function returning a promise object can be used to load values asynchronously
             scope.getLocation = function (val) {
-                return $http.get('/api/autoskills', {
+                return $http.get("/api/autoskills", {
                     params: {
                         query: val
                     }
@@ -177,5 +150,4 @@
     };
 });
 
-// Non angualr
 

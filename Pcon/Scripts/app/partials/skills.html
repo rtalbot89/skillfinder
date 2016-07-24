@@ -1,6 +1,6 @@
-﻿<span ng-repeat="word in skills">
+﻿<span ng-repeat="word in skills | orderBy:'Name'">
    
-        <button class="btn btn-default btn-sm" ng-click="removeSkill(word)"><i class="glyphicon glyphicon-remove"></i>{{word}}</button>
+        <button class="btn btn-default btn-sm" ng-click="removeSkill(word)"><i class="glyphicon glyphicon-remove"></i>{{word.Name}}</button>
        
       
   

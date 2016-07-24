@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Neo4jClient;
 using Neo4jClient.Transactions;
 using NUnit.Framework;
@@ -39,7 +40,7 @@ namespace PconTests.DAL
         public void AllUsersAndOusTest()
         {
             var ou = new OU { Id = 1, Name = "testou" };
-            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
+            var user = new User { Name = "test user", UserName = "tuser" };
             var skill = new Skill { Id = 1, Name = "test skill" };
 
             _graphClient.Cypher
@@ -54,9 +55,9 @@ namespace PconTests.DAL
         [Test()]
         public void GetProfileFromIdTest()
         {
-            var ou = new OU { Id = 1, Name = "testou" };
-            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
-            var skill = new Skill { Id = 1, Name = "test skill" };
+            var ou = new OU { Name = "testou" };
+            var user = new User { Name = "test user", UserName = "tuser" };
+            var skill = new Skill { Name = "test skill" };
             _graphClient.Cypher
             .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
             .WithParams(new { skill, user, ou })
@@ -74,9 +75,9 @@ namespace PconTests.DAL
         [Test()]
         public void GetProfileFromUserNameTest()
         {
-            var ou = new OU { Id = 1, Name = "testou" };
-            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
-            var skill = new Skill { Id = 1, Name = "test skill" };
+            var ou = new OU {  Name = "testou" };
+            var user = new User {  Name = "test user", UserName = "tuser" };
+            var skill = new Skill {  Name = "test skill" };
             _graphClient.Cypher
             .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
             .WithParams(new { skill, user, ou })
@@ -94,9 +95,9 @@ namespace PconTests.DAL
         [Test()]
         public void AllUsersWithSkillsTest()
         {
-            var ou = new OU { Id = 1, Name = "testou" };
-            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
-            var skill = new Skill { Id = 1, Name = "test skill" };
+            var ou = new OU {Name = "testou" };
+            var user = new User { Name = "test user", UserName = "tuser" };
+            var skill = new Skill {Name = "test skill" };
             _graphClient.Cypher
             .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
             .WithParams(new { skill, user, ou })
@@ -110,9 +111,9 @@ namespace PconTests.DAL
         [Test()]
         public void GetUserWithSkillsTest()
         {
-            var ou = new OU { Id = 1, Name = "testou" };
-            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
-            var skill = new Skill { Id = 1, Name = "test skill" };
+            var ou = new OU {  Name = "testou" };
+            var user = new User {  Name = "test user", UserName = "tuser" };
+            var skill = new Skill { Name = "test skill" };
             _graphClient.Cypher
             .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
             .WithParams(new { skill, user, ou })
@@ -130,9 +131,9 @@ namespace PconTests.DAL
         [Test()]
         public void UserHasSkillsTest()
         {
-            var ou = new OU { Id = 1, Name = "testou" };
-            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
-            var skill = new Skill { Id = 1, Name = "test skill" };
+            var ou = new OU { Name = "testou" };
+            var user = new User { Name = "test user", UserName = "tuser" };
+            var skill = new Skill {  Name = "test skill" };
             _graphClient.Cypher
             .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
             .WithParams(new { skill, user, ou })
@@ -152,9 +153,9 @@ namespace PconTests.DAL
         [Test()]
         public void UsersAllSkillsTest()
         {
-            var ou = new OU { Id = 1, Name = "testou" };
-            var user = new User { Id = 1, Name = "test user", UserName = "tuser" };
-            var skill = new Skill { Id = 1, Name = "test skill" };
+            var ou = new OU { Name = "testou" };
+            var user = new User { Name = "test user", UserName = "tuser" };
+            var skill = new Skill {  Name = "test skill" };
             _graphClient.Cypher
             .Create("(:Skill {skill})<-[:HAS_SKILL]-(:User {user})-[:WORKS_IN]->(:OU {ou})")
             .WithParams(new { skill, user, ou })
@@ -170,9 +171,11 @@ namespace PconTests.DAL
         {
             var profile = new Profile
             {
-                Name = "user two",
-                Organisation = "dept two",
-                Skills = new[] {"one", "two", "three"}
+                
+                User = new User { Name= "test", UserName = "test"},
+                Ou = new ClientNode { Name = "test"},
+                Skills = new List<ClientNode>()
+                
             };
             const string userName = "nuser";
 

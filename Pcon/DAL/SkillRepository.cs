@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Neo4jClient;
 using Neo4jClient.Transactions;
@@ -49,23 +50,40 @@ namespace Pcon.DAL
             return profile;
         }
 
+        public object AllProfiles()
+        {
+            var profile = _graphClient.Cypher
+                .Match("(user:User)-[:HAS_SKILL]->(skill:Skill), (user)-[:WORKS_IN]->(ou: OU)")
+                .Return((user, skill, ou)
+                    => new Profile
+                    {
+                        User = user.As<User>(),
+                        Skills = skill.CollectAs<ClientNode>(),
+                        Ou = ou.As<ClientNode>()
+                    }
+                )
+                .Results;
+            return profile;
+        }
+
         public object GetProfileFromUserName(string userName)
         {
             var profile = _graphClient.Cypher
                 .Match("(user:User)-[:HAS_SKILL]->(skill:Skill), (user)-[:WORKS_IN]->(ou: OU)")
                 .Where((User user) => user.UserName == userName)
                 .Return((user, skill, ou)
-                => new {
-                    User = user.As<User>(),
-                    Skills = skill.CollectAs<User>(),
-                    OU = ou.As<OU>()
-                }
+                    => new Profile
+                    {
+                        User = user.As<User>(),
+                        Skills = skill.CollectAs<ClientNode>(),
+                        Ou = ou.As<ClientNode>()
+                    }
                 )
                 .Results;
-            return profile;
+            return profile.FirstOrDefault();
         }
 
-        public IEnumerable AllUsersWithSkills()
+        public IEnumerable<object> AllUsersWithSkills()
         {
             var profiles = _graphClient.Cypher
                .Match("(user:User)-[:HAS_SKILL]->(skill:Skill)")
@@ -79,7 +97,7 @@ namespace Pcon.DAL
             return profiles;
         }
 
-        public object GetUserWithSkills(string id)
+        public IEnumerable GetUserWithSkills(string id)
         {
             var profile = _graphClient.Cypher
                 .Match("(user:User)-[:HAS_SKILL]->(qs:Skill), (otherskill:Skill)<-[:HAS_SKILL]-(user)-[:WORKS_IN]->(ou: OU)")
@@ -97,11 +115,11 @@ namespace Pcon.DAL
             return profile;
         }
 
-        public object UserHasSkills(string[] id)
+        public IEnumerable<object> UserHasSkills(string[] skills)
         {
             var profile =_graphClient.Cypher
                .Match("(user:User)-[:HAS_SKILL]->(s) WHERE s.Name IN {skillList}")
-               .WithParam("skillList", id)
+               .WithParam("skillList", skills)
                .With("user")
                .Match("(user)-[:HAS_SKILL]->(userskill:Skill)")
                .With("user, userskill")
@@ -120,7 +138,7 @@ namespace Pcon.DAL
 
         }
 
-        public object UsersAllSkills()
+        public IEnumerable<object> UsersAllSkills()
         {
             var profiles =_graphClient.Cypher
               .Match("(user:User)-[:HAS_SKILL]->(skill:Skill)")
@@ -134,11 +152,11 @@ namespace Pcon.DAL
            return profiles;
 
         }
-        public void CreateProfile(Profile id, string userName)
+        public void CreateProfile(Profile profile, string userName)
         {
 
-            var newUser = new { id.Name, UserName = userName };
-            var organisation = new { Name = id.Organisation };
+            var newUser = new { profile.User.Name, UserName = userName };
+            var organisation = new { Name = profile.Ou.Name };
            _graphClient.Cypher
                 .Merge("(user:User { UserName: {username} })")
                 .OnCreate()
@@ -161,14 +179,14 @@ namespace Pcon.DAL
                .ExecuteWithoutResults();
            _graphClient.Cypher
                 .Match("(user:User)", "(ou:OU)")
-                .Where((User user) => user.Name == id.Name)
-                .AndWhere((OU ou) => ou.Name == id.Organisation)
+                .Where((User user) => user.Name == profile.User.Name)
+                .AndWhere((OU ou) => ou.Name == profile.Ou.Name)
                 .CreateUnique("(user)-[:WORKS_IN]->(ou)")
                 .ExecuteWithoutResults();
 
             // A rudimentary way of adding skills and relationships
             // Is there a way of avoiding foreach?
-            foreach (var s in id.Skills)
+            foreach (var s in profile.Skills)
             {
                 var newSkill = new { Name = s };
                _graphClient.Cypher

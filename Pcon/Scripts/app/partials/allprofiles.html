@@ -1,0 +1,29 @@
+﻿
+
+<div class="row">
+    <div class="col-md-12" ng-controller="profileController as allProfiles">
+        <h2>All profiles</h2>
+        <a ng-href="/#/create">Create profile</a>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Organisation</th>
+                <th>Skills</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="person in allProfiles.list">
+                <td>{{person.User.Name}}</td>
+                <td>{{person.Ou.Name}}</td>
+                <td>
+                    <span ng-repeat="skill in person.Skills">{{skill.Name}} </span>
+                </td>
+                <td><a ng-href="/#/profiles/{{person.User.UserName}}/edit">Edit</a> <a ng-href="#">Delete</a></td>
+            </tr>
+
+            </tbody>
+        </table>
+        </div>
+</div>

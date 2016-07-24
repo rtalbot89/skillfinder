@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNet.Identity
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -10,53 +9,27 @@
 
 </head>
 <body>
- 
-  
-       <!--
-       <header class="id7-masthead">
-       
-       </header>
-           -->
-      
     <nav class="navbar navbar-inverse navbar-fixed-top">
        <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">
-                    <img alt="Brand" src="~/Content/masthead-w.svg" width="70" height="40" style="margin-top:-17px"/>
-                </a>
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                   <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                     
+                    <span class="icon-bar"></span>
                 </button>
+                @Html.ActionLink("Skill finder", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
            </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                  <li>@Html.ActionLink("Find", "Index", "Profile")</li>
-                    <li><a href="/profile/#/graph">Graph</a></li>
-                    <li><a href="/profile/#/skills">Browse skills</a></li>
-                    <!--
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                     -->
-@if (Request.IsAuthenticated)
-{
-                    <li>@Html.ActionLink("My profile", "Index", "MyProfile", routeValues: null, htmlAttributes: new { title = "My profile" })</li>
-}
+                    <li><a href="/#/find">Find</a></li>
+                    <li><a href="/#/skills">Browse skills</a></li>
+                    <li><a href="/#/profiles">Profiles</a></li>
                 </ul>
-                @Html.Partial("_LoginPartial")
             </div>
-      
     </nav>
    <div class="container">
-       <div class="row">
-           <div class="col-md-12">
-               <h1>Skill finder</h1>
-           </div>
-       </div>
+     
      
         @RenderBody()
 

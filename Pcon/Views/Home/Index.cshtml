@@ -1,40 +1,10 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿<div class="row">
+    <div class="col-md-12">
+        <div ng-app="find" ng-view></div>
+    </div>
+</div>
+@section scripts {
+    <script src="~/Scripts/d3/d3.js"></script>
+    <script src="~/Scripts/app/find.js"></script>
+<script src="~/Scripts/app/profile.js"></script>
 }
-<div class="jumbotron">
-    <ul class="list-unstyled">
-        <li><a href="#">@Html.ActionLink("Search skills", "Index", "Profile")</a></li>
-        <li><a href="/profile/#/graph">Visualise connections</a></li>
-        <li><a href="/profile/#/skills">Browse skills</a></li>
-        <li><a href="/Account/Register">Register and create a profile</a></li>
-    </ul>
-</div>
-<div class="container">
-<div class="col-md-12">
-    <h2>How it works</h2>
-    <p>Users list their skills. Other people who need these skills can search and browse for them.</p>
-</div>
-    </div>
-
-
-    <!-- Example row of columns -->
-<!--
-    <div class="row">
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-    </div>
-    -->
-   

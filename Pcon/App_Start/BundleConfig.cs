@@ -28,6 +28,7 @@ namespace Pcon
                 "~/Scripts/angular-animate.js",
                 "~/Scripts/angular-touch.js",
                 "~/Scripts/angular-ui.js",
+                "~/Scripts/angular-resource.js",
                 "~/Scripts/angular-ui/ui-bootstrap-tpls.js"
                 ));
 

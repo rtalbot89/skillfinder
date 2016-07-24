@@ -5,8 +5,8 @@ using System.Web;
 
 namespace Pcon.Models
 {
-    public class User : ClientNode
+    public class ClientNode
     {
-        public string UserName { get; set; }
+        public string Name { get; set; }
     }
 }

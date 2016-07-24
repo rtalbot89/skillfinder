@@ -78,7 +78,7 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Neo4jClient, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neo4jClient.1.1.0.34\lib\net45\Neo4jClient.dll</HintPath>
+      <HintPath>..\packages\Neo4jClient.1.1.0.39\lib\net45\Neo4jClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -205,6 +205,7 @@
   <ItemGroup>
     <Compile Include="Api\AutoOrgController.cs" />
     <Compile Include="Api\AutoSkillsController.cs" />
+    <Compile Include="Api\ManageProfilesController.cs" />
     <Compile Include="Api\NeoMyProfileController.cs" />
     <Compile Include="Api\SkillSearchController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -214,10 +215,12 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MyProfileController.cs" />
-    <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\FindController.cs" />
+    <Compile Include="Controllers\ProfilesController.cs" />
     <Compile Include="DAL\SkillRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -225,6 +228,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\ClientNode.cs" />
     <Compile Include="Models\OU.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Skill.cs" />
@@ -293,6 +297,7 @@
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\find.js" />
+    <Content Include="Scripts\app\partials\allprofiles.html" />
     <Content Include="Scripts\app\partials\browseskills.html" />
     <Content Include="Scripts\app\partials\edit.html" />
     <Content Include="Scripts\app\partials\force.html" />
@@ -1122,13 +1127,15 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Profile\Index.cshtml" />
-    <Content Include="Views\Profile\Create.cshtml" />
+    <Content Include="Views\Find\Index.cshtml" />
+    <Content Include="Views\Find\Create.cshtml" />
     <Content Include="Scripts\version.json" />
     <Content Include="Views\MyProfile\Index.cshtml" />
+    <Content Include="Views\Profiles\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

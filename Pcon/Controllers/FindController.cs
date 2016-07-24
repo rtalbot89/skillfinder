@@ -2,7 +2,7 @@
 
 namespace Pcon.Controllers
 {
-    public class ProfileController : Controller
+    public class FindController : Controller
     {
         public ActionResult Index()
         {
