@@ -1,23 +1,18 @@
 ﻿angular.module("find")
-.controller("profileController", function ($http, profileApi) {
+.controller("profileController", function (profileApi) {
     var profiles = this;
-        profiles.list = profileApi.query();
-    })
-.controller("createController", function ($http, $location, orgSuggest, profileApi) {
+    profiles.list = profileApi.query();
+})
+.controller("createController", function ($location, profileApi) {
     var myProfile = this;
     myProfile.data = {
         User: {},
         Ou: {},
-        Skills : []
-    };
-
-    // Autocomplete OU
-    myProfile.getLocation = function (val) {
-        return orgSuggest(val);
+        Skills: []
     };
 
     myProfile.update = function () {
-        profileApi.save(myProfile.data,function() {
+        profileApi.save(myProfile.data, function () {
             $location.path("/profiles");
         });
     };
@@ -50,14 +45,9 @@
             console.log("failed");
         });
 })
-.controller("editController", function ($http, $routeParams, $location, profileApi, orgSuggest) {
+.controller("editController", function ($routeParams, $location, profileApi) {
     var editProfile = this;
     editProfile.data = profileApi.get({ id: $routeParams.id });
-
-     // Autocomplete OU
-    editProfile.getLocation = function (val) {
-        return orgSuggest(val);
-    };
 
     editProfile.update = function () {
         profileApi.update(editProfile.data,
@@ -70,31 +60,40 @@
         $location.path("/profiles");
     };
 })
-    .controller("deleteController", function() {
-        var profile = this;
+.controller("deleteController", function () {
+    var profile = this;
 
-    })
-.factory("profileApi", ["$resource", function($resource) {
+})
+.factory("profileApi", ["$resource", function ($resource) {
     return $resource("/api/neomyprofile", null,
         {
-            "update": { method:"PUT" }
+            "update": { method: "PUT" }
         });
 }])
-    .factory("orgSuggest", ["$http", function($http) {
-        return function(val) {
-            return $http.get("/api/autoorg",
-                {
-                    params: {
-                        query: val
-                    }
-                })
-                .then(function(response) {
-                    return response.data.map(function(item) {
-                        return item.Name;
+.directive("ous", function ($http) {
+    return {
+        restrict: "E",
+        scope: {
+            ou: "=ou"
+        },
+        templateUrl: "/Scripts/app/partials/ous.html",
+        link: function (scope) {
+            scope.getLocation = function (val) {
+                return $http.get("/api/autoorg",
+                    {
+                        params: {
+                            query: val
+                        }
+                    })
+                    .then(function (response) {
+                        return response.data.map(function (item) {
+                            return item.Name;
+                        });
                     });
-                });
-        };
-    }])
+            };
+        }
+    };
+})
 .directive("skills", function ($http) {
 
     return {
@@ -134,7 +133,6 @@
                 scope.noResults = false;
             };
 
-            // Any function returning a promise object can be used to load values asynchronously
             scope.getLocation = function (val) {
                 return $http.get("/api/autoskills", {
                     params: {
@@ -149,5 +147,3 @@
         }
     };
 });
-
-

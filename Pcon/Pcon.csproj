@@ -304,6 +304,7 @@
     <Content Include="Scripts\app\partials\graph.html" />
     <Content Include="Scripts\app\partials\home.html" />
     <Content Include="Scripts\app\partials\new.html" />
+    <Content Include="Scripts\app\partials\ous.html" />
     <Content Include="Scripts\app\partials\skills.html" />
     <Content Include="Scripts\app\partials\view.html" />
     <Content Include="Scripts\app\profile.js" />
