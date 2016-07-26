@@ -299,6 +299,7 @@
     <Content Include="Scripts\app\find.js" />
     <Content Include="Scripts\app\partials\allprofiles.html" />
     <Content Include="Scripts\app\partials\browseskills.html" />
+    <Content Include="Scripts\app\partials\delete.html" />
     <Content Include="Scripts\app\partials\edit.html" />
     <Content Include="Scripts\app\partials\force.html" />
     <Content Include="Scripts\app\partials\graph.html" />

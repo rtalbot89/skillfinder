@@ -41,6 +41,11 @@
               controller: "editController",
               controllerAs: "editProfile"
           })
+             .when("/profiles/:id/delete", {
+                 templateUrl: "/Scripts/app/partials/delete.html",
+                 controller: "deleteController",
+                 controllerAs: "deleteProfile"
+             })
             .otherwise({ redirectTo: "/" });
     })
     .controller("homeController", function ($http, $routeParams, $filter) {

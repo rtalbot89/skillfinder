@@ -12,7 +12,7 @@ using Pcon.DAL;
 
 namespace Pcon.Api
 {
-   // [Authorize]
+    // [Authorize]
     public class NeoMyProfileController : ApiController
     {
         private readonly SkillRepository _skillRepository;
@@ -48,7 +48,7 @@ namespace Pcon.Api
                 .Set("user = {newUser}")
                 .WithParams(new
                 {
-                    username = profile.User.UserName ,
+                    username = profile.User.UserName,
                     newUser = profile.User
                 })
                 .ExecuteWithoutResults();
@@ -111,7 +111,7 @@ namespace Pcon.Api
                 {
                     ouName = profile.Ou.Name,
                     profileOu = profile.Ou
-                    
+
                 })
                 .CreateUnique("(user)-[:WORKS_IN]->(ou)")
                 .ExecuteWithoutResults();
@@ -157,6 +157,17 @@ namespace Pcon.Api
                         .ExecuteWithoutResults();
                 }
             }
+            return Ok();
+        }
+
+        public IHttpActionResult Delete(string id)
+        {
+            var graphClient = WebApiConfig.GraphClient;
+            graphClient.Cypher
+                .OptionalMatch("(user:User)-[r]->()")
+                .Where((User user) => user.UserName == id)
+                .Delete("r, user")
+                .ExecuteWithoutResults();
             return Ok();
         }
     }

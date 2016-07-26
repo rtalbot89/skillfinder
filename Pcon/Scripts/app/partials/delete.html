@@ -1,0 +1,16 @@
+﻿<h2>Delete profile</h2>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <p><strong>Username:</strong> {{deleteProfile.data.User.UserName}}
+        </p>
+        <p><strong>Name:</strong> {{deleteProfile.data.User.Name}}
+        </p>
+        <p>
+            <strong>Skills:</strong>
+
+            <span ng-repeat="skill in deleteProfile.data.Skills">{{skill.Name}} </span>
+        </p>
+        <button class="btn btn-danger" ng-click="deleteProfile.delete();">Delete</button>
+        <button class="btn btn-default" ng-click="deleteProfile.cancel();">Cancel</button>
+    </div>
+</div>

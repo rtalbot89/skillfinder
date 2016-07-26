@@ -60,10 +60,20 @@
         $location.path("/profiles");
     };
 })
-.controller("deleteController", function () {
-    var profile = this;
+.controller("deleteController", function ($routeParams, $location, profileApi) {
+    var deleteProfile = this;
+    deleteProfile.data = profileApi.get({ id: $routeParams.id });
 
-})
+        deleteProfile.delete = function() {
+            profileApi.remove({ id: $routeParams.id }, function() {
+                $location.path("/profiles");
+            });
+        };
+
+        deleteProfile.cancel = function() {
+            $location.path("/profiles");
+        };
+    })
 .factory("profileApi", ["$resource", function ($resource) {
     return $resource("/api/neomyprofile", null,
         {
