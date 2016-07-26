@@ -33,13 +33,13 @@
   stroke-width: 2px;
 }
 
-body { padding-top: 50px; }
+body { padding-top: 70px; }
 
 .svg-container {
     display: inline-block;
     position: relative;
     width: 100%;
-    padding-bottom: 40%; /* aspect ratio */
+    padding-bottom: 60%; /* aspect ratio */
     vertical-align: top;
     overflow: hidden;
    /*background-color: yellow;*/

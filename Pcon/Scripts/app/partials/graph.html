@@ -1,9 +1,12 @@
 ﻿<div class="col-md-12">
+    
+</div>
+
+<h2>Connect people by skill</h2>
+<div class="col-md-4">
     <form ng-submit="graph.searchSkills()">
         <div class="form-group">
-            <label for="skill">
-                Connect people by skill
-            </label>
+         
             <input type="text" autocomplete="off" ng-model="graph.skill" id="skill"
                    uib-typeahead="address for address in graph.getLocation($viewValue)"
                    placeholder="Start typing"
@@ -43,7 +46,7 @@
 
 
     </div>
-<div class="col-md-12">
+<div class="col-md-8">
     <skillGraph links="graph.force.links" nodes="graph.force.nodes" flag="graph.flag"></skillGraph>
 
 </div>

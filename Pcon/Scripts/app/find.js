@@ -245,7 +245,7 @@
 
     function dlink(scope, element) {
         var width = 600,
-        height = 350;
+        height = 400;
 
         var svg = d3.select(element[0])
         .append("div")
@@ -253,7 +253,7 @@
         .append("svg")
         //responsive SVG needs these 2 attributes and no width and height attr
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 900 360")
+        .attr("viewBox", "0 0 700 450")
         //class to make it responsive
         .classed("svg-content-responsive", true);
 
