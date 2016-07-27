@@ -46,28 +46,16 @@ namespace Pcon.Api
                 .Merge("(user:User { UserName: {username} })")
                 .OnCreate()
                 .Set("user = {newUser}")
+                .Merge("(ou:OU {Name: {ouName} })")
+                .OnCreate()
+                .Set("ou = {profileOu}")
                 .WithParams(new
                 {
                     username = profile.User.UserName,
-                    newUser = profile.User
+                    newUser = profile.User,
+                    ouName = profile.Ou.Name,
+                    profileOu = profile.Ou
                 })
-                .ExecuteWithoutResults();
-
-            graphClient.Cypher
-               .Merge("(ou: OU { Name: {name} })")
-               .OnCreate()
-               .Set("ou = {newOu}")
-               .WithParams(new
-               {
-                   name = profile.Ou.Name,
-                   newOu = profile.Ou
-               })
-               .ExecuteWithoutResults();
-
-            graphClient.Cypher
-                .Match("(user:User)", "(ou:OU)")
-                .Where((User user) => user.UserName == profile.User.UserName)
-                .AndWhere((ClientNode ou) => ou.Name == profile.Ou.Name)
                 .CreateUnique("(user)-[:WORKS_IN]->(ou)")
                 .ExecuteWithoutResults();
 
