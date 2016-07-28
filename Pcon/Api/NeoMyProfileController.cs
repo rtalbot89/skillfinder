@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -41,7 +42,7 @@ namespace Pcon.Api
 
         public IHttpActionResult Post(Profile profile)
         {
-            var graphClient = WebApiConfig.GraphClient;
+        var graphClient = WebApiConfig.GraphClient;
             graphClient.Cypher
                 .Merge("(user:User { UserName: {username} })")
                 .OnCreate()
@@ -49,35 +50,19 @@ namespace Pcon.Api
                 .Merge("(ou:OU {Name: {ouName} })")
                 .OnCreate()
                 .Set("ou = {profileOu}")
+                .CreateUnique("(user)-[:WORKS_IN]->(ou)")
+                .ForEach(
+                "(skn in {skillList} | MERGE (sk:Skill {Name: skn.Name }) " +
+                "SET sk = skn CREATE UNIQUE (user)-[:HAS_SKILL]->(sk))")
                 .WithParams(new
                 {
                     username = profile.User.UserName,
                     newUser = profile.User,
                     ouName = profile.Ou.Name,
-                    profileOu = profile.Ou
+                    profileOu = profile.Ou,
+                    skillList = profile.Skills
                 })
-                .CreateUnique("(user)-[:WORKS_IN]->(ou)")
                 .ExecuteWithoutResults();
-
-            // A rudimentary way of adding skills and relationships
-            // Is there a way of avoiding foreach?
-            foreach (var newSkill in profile.Skills)
-            {
-                //var newSkill = new { Name = s };
-                graphClient.Cypher
-                    .Match("(user:User)")
-                    .Where((User user) => user.UserName == profile.User.UserName)
-                    .Merge("(skill:Skill { Name: {name} })")
-                    .OnCreate()
-                    .Set("skill = {newSkill}")
-                    .CreateUnique("(user)-[:HAS_SKILL]->(skill)")
-                    .WithParams(new
-                    {
-                        name = newSkill.Name,
-                        newSkill
-                    })
-                    .ExecuteWithoutResults();
-            }
             return Ok();
         }
 
