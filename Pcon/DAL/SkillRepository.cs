@@ -86,11 +86,12 @@ namespace Pcon.DAL
         public IEnumerable<object> AllUsersWithSkills()
         {
             var profiles = _graphClient.Cypher
-               .Match("(user:User)-[:HAS_SKILL]->(skill:Skill)")
-               .Return((user, skill) => new
+               .Match("(ou:OU)<-[:WORKS_IN]-(user:User)-[:HAS_SKILL]->(skill:Skill)")
+               .Return((user, ou, skill) => new
                {
                    user = user.As<User>(),
-                   skills = skill.CollectAs<User>()
+                   ou = ou.As<ClientNode>(),
+                   skills = skill.CollectAs<ClientNode>(),
                }
                )
                .Results;

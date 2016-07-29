@@ -53,4 +53,8 @@ body { padding-top: 70px; }
     left: 0;
 }
 
+svg text {
+   font-family: FontAwesome;
+}
+
  

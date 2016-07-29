@@ -120,6 +120,8 @@
             graph.force.nodes = [];
             graph.force.links = [];
             var nodeTracker = [];
+            // collect the ous to link laste
+            var ous = [];
 
             // Only do this if showing the whole thing
             var i;
@@ -128,11 +130,23 @@
             var s;
             var skillId;
             var hasId;
+            var ouId;
             if (graph.filters.length === 0) {
                 for (i = 0; i < result.data.length; i++) {
                     d = result.data[i];
                     nodeTracker.push({ user: d.user.Name });
                     userId = nodeTracker.length - 1;
+                    //ous.push(d.ou.Name);
+                    var hasOu = nodeTracker.map(function (e) { return e.ou; }).indexOf(d.ou.Name);
+                    if (hasOu === -1) {
+                        nodeTracker.push({ ou: d.ou.Name });
+                        ouId = nodeTracker.length - 1;
+                    } else {
+                        ouId = hasOu;
+                    }
+
+                    graph.force.links.push({ source: userId, target: ouId });
+                  
                     for (var j = 0; j < d.skills.length; j++) {
                         s = d.skills[j];
                         hasId = nodeTracker.map(function (e) { return e.skill; }).indexOf(s.Name);
@@ -173,6 +187,10 @@
             nodeTracker.forEach(function (t) {
                 if (t.user !== undefined) {
                     graph.force.nodes.push({ name: t.user, type: "user", id: nid });
+                }
+
+                if (t.ou !== undefined) {
+                    graph.force.nodes.push({ name: t.ou, type: "ou", id: nid });
                 }
                 if (t.skill !== undefined) {
                     graph.force.nodes.push({ name: t.skill, type: "skill", id: nid });
@@ -243,9 +261,12 @@
 
     var iconType = function (d) {
         if (d.type === "skill") {
-            return "/content/hammer-circle.png";
+            return "\uf0ad";
         }
-        return "/content/person-circle.png";
+        if (d.type === "ou") {
+            return "\uf1ad";
+        }
+        return "\uf007";
     };
 
     function dlink(scope, element) {
@@ -289,23 +310,29 @@
                 link.exit().remove();
 
                 node = node.data(force.nodes(), function (d) { return d.id; });
-                var group = node.enter().append("g").attr("class", function (d) { return "node " + d.id; });
+                var group = node.enter().append("g").attr("class", function(d) { return "node " + d.id; });
+                group.append("title").text(function (d) { return d.name; });
                 group.call(force.drag);
 
                 group.append("circle").attr("r", 10).attr("fill", function (d) {
                     if (d.type === "user") {
                         return "#5731F2";
                     }
-                    return "#30B5FF";
+                    if (d.type === "skill") {
+                        return "yellow";
+                    }
+
+                    if (d.type === "ou") {
+                        return "green";
+                    }
+                   
                 });
 
-                group.append("image")
-                .attr("xlink:href", function (d) { return iconType(d); })
-                .attr("x", -10)
-                .attr("y", -10)
-                .attr("width", 20)
-                .attr("height", 20)
-                .append("title").text(function (d) { return d.name; });
+                group.append("text")
+                    .attr("x", -5)
+                    .attr("y", 5)
+                    .text(function(d) { return iconType(d); });
+               
 
                 node.exit().remove();
 
