@@ -30,15 +30,13 @@ namespace Pcon.Api
         // Get all profiles and skills
         public IHttpActionResult Get()
         {
-            var profiles = _skillRepository.AllUsersWithSkills();
-            return Ok(profiles);
+            return Ok(_skillRepository.AllUsersWithSkills());
         }
 
-        // From POST return profiles matching a selection of skills
-        // or all users and skills if the list of skills is empty
+        // From POST return profiles matching an array of skills
         public IHttpActionResult Post(string[] skills)
         {
-            return Ok(skills.Length > 0 ? _skillRepository.UserHasSkills(skills) : _skillRepository.AllUsersWithSkills());
+            return Ok( _skillRepository.UserHasSkills(skills));
         }
     }
 }

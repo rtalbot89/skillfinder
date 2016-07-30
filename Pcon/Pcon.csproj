@@ -299,7 +299,9 @@
     <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
-    <Content Include="Scripts\app\find.js" />
+    <Content Include="Scripts\app\directives.js" />
+    <Content Include="Scripts\app\app.js" />
+    <Content Include="Scripts\app\graphdirective.js" />
     <Content Include="Scripts\app\partials\allprofiles.html" />
     <Content Include="Scripts\app\partials\browseskills.html" />
     <Content Include="Scripts\app\partials\delete.html" />
@@ -311,7 +313,8 @@
     <Content Include="Scripts\app\partials\ous.html" />
     <Content Include="Scripts\app\partials\skills.html" />
     <Content Include="Scripts\app\partials\view.html" />
-    <Content Include="Scripts\app\profile.js" />
+    <Content Include="Scripts\app\controllers.js" />
+    <Content Include="Scripts\app\services.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
