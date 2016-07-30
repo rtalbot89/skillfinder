@@ -107,9 +107,9 @@ namespace Pcon.DAL
                 => new
                 {
                     user = user.As<User>(),
-                    skills = otherskill.CollectAs<User>(),
-                    qs = qs.As<User>(),
-                    OU = ou.As<OU>()
+                    skills = otherskill.CollectAs<ClientNode>(),
+                    qs = qs.As<ClientNode>(),
+                    ou = ou.As<ClientNode>()
                 }
                 )
                 .Results;
@@ -121,16 +121,17 @@ namespace Pcon.DAL
             var profile =_graphClient.Cypher
                .Match("(user:User)-[:HAS_SKILL]->(s) WHERE s.Name IN {skillList}")
                .WithParam("skillList", skills)
-               .With("user")
-               .Match("(user)-[:HAS_SKILL]->(userskill:Skill)")
-               .With("user, userskill")
+               .With("user, s")
+                 //.Match("(user)-[:HAS_SKILL]->(userskill:Skill)")
+               //.Match("(ou:OU)<-[:WORKS_IN]-(user)-[:HAS_SKILL]->(skill:Skill)")
+               //.With("user, userskill")
                .Match("(user)-[:WORKS_IN]->(ou:OU)")
-               .Return((user, userskill, ou)
+               .Return((user, s, ou)
                => new
                {
                    user = user.As<User>(),
-                   skills = userskill.CollectAsDistinct<User>(),
-                   OU = ou.As<User>()
+                   skills = s.CollectAs<ClientNode>(),
+                   ou = ou.As<ClientNode>()
                }
                )
                .Results;
