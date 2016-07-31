@@ -43,6 +43,19 @@
                     }
                 }
                 return -1;
+            },
+            skillCount: function(data) {
+                var tmpObj = {};
+                for (var i = 0; i < data.length; i += 1) {
+                    for (var j = 0; j < data[i].skills.length; j += 1) {
+                        if (tmpObj[data[i].skills[j].Name] === undefined) {
+                            tmpObj[data[i].skills[j].Name] = 1;
+                        } else {
+                            tmpObj[data[i].skills[j].Name] += 1;
+                        }
+                    }
+                }
+                return Object.keys(tmpObj).map(function (key) { return { name: key, count: tmpObj[key] }; });
             }
         }
     })

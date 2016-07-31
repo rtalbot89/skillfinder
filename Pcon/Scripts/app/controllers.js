@@ -76,26 +76,11 @@
             graph.setNodes();
         };
     })
-    .controller("listSkillsController", function (skillApi) {
+    .controller("listSkillsController", function (skillApi, arrayFunc) {
         var skills = this;
-        skills.list = [];
-        skills.count = {};
+
         skillApi.query(function (data) {
-            data.forEach(function (d) {
-                d.skills.forEach(function (s) {
-
-                    if (skills.count[s.Name] === undefined) {
-                        skills.count[s.Name] = 1;
-                    } else {
-                        skills.count[s.Name] += 1;
-                    }
-
-                    if (skills.list.indexOf(s.Name) === -1) {
-                        skills.list.push(s.Name);
-                    }
-                });
-            });
-            skills.list.sort();
+            skills.list = arrayFunc.skillCount(data);
         });
     })
     .controller("profileController", function (profileApi) {
