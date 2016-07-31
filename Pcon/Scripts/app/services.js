@@ -46,16 +46,16 @@
             }
         }
     })
-    .factory("dbNode", function ($http, arrayFunc) {
-        function d3Model(result, graph) {
+    .factory("dbNode", function ($http, arrayFunc, skillApi) {
+        function d3Model(data, graph) {
             var i, d, userId, s, skillId, ouId;
             graph.force = {
                 nodes: [],
                 links: []
             };
 
-            for (i = 0; i < result.data.length; i++) {
-                d = result.data[i];
+            for (i = 0; i < data.length; i++) {
+                d = data[i];
                 userId = graph.force.nodes.length;
                 graph.force.nodes.push({ name: d.user.Name, type: "user", id: userId });
 
@@ -81,17 +81,15 @@
         }
 
         function filterBySkill(graph) {
-            $http.post("/api/skillsearch", graph.filters)
-                .then(function (result) {
-                    d3Model(result, graph);
-                }, function () { console.log("failed"); });
+            skillApi.search(graph.filters, function (data) {
+                d3Model(data, graph);
+            });
         }
 
         function allBySkill(graph) {
-            $http.get("/api/skillsearch", graph)
-                .then(function (result) {
-                    d3Model(result, graph);
-                }, function () {console.log("failed");});
+            skillApi.query(function (data) {
+                d3Model(data, graph);
+            });
         }
 
         return {
