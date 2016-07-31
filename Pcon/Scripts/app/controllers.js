@@ -1,32 +1,34 @@
 ﻿angular.module("find")
-    .controller("homeController", function ($routeParams, $filter, typeAhead, skillApi) {
+    .controller("homeController", function ($routeParams, typeAhead, skillApi) {
         var profiles = this;
-        profiles.tags = [];
+        profiles.skills = [];
 
-        profiles.getLocation = function (val) {
+        profiles.getSkill = function (val) {
             return typeAhead.skill(val);
         };
 
-        profiles.searchSkills = function () {
-            // Check for duplicate skills
-            if (profiles.skill !== "" && profiles.tags.indexOf(profiles.skill) === -1) {
-                profiles.tags.push(profiles.skill);
+        profiles.addSkill = function () {
+            if (profiles.skills.indexOf(profiles.skill) === -1) {
+                 profiles.skills.push(profiles.skill);
+                 profiles.searchResults = skillApi.search(profiles.skills);
             }
-            profiles.searchResults = skillApi.search(profiles.tags);
             profiles.skill = "";
         };
 
         // Search from a link
         if ($routeParams.q) {
             profiles.skill = $routeParams.q;
-            profiles.searchSkills();
+            profiles.skills.push(profiles.skill);
+            profiles.searchResults = skillApi.search(profiles.skills);
+            profiles.skill = "";
         }
 
-        profiles.removeTag = function (index, tag) {
-            profiles.skill = "";
-            profiles.tags = $filter("filter")(profiles.tags, function (d) { return d !== tag; });
-            if (profiles.tags.length > 0) {
-                profiles.searchSkills();
+        profiles.removeSkill = function (index) {
+
+            profiles.skills.splice(index, 1);
+
+            if (profiles.skills.length > 0) {
+                profiles.searchResults = skillApi.search(profiles.skills);
             } else {
                 profiles.searchResults = [];
             }
