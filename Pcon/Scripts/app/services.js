@@ -31,7 +31,7 @@
     .factory("skillApi", ["$resource", function ($resource) {
         return $resource("/api/skillsearch", null,
         {
-            "search": {method: "POST", isArray : true}
+            "search": { method: "POST", isArray: true }
         });
     }])
     .factory("arrayFunc", function () {
@@ -46,7 +46,7 @@
             }
         }
     })
-    .factory("dbNode", function ($http, arrayFunc, skillApi) {
+    .factory("dbNode", function (arrayFunc, skillApi) {
         function d3Model(data, graph) {
             var i, d, userId, s, skillId, ouId;
             graph.force = {
@@ -95,5 +95,38 @@
         return {
             filterBySkill: filterBySkill,
             allBySkill: allBySkill
+        }
+    })
+    .factory("skillArray", function () {
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function add(skills, skill) {
+            var exists = false;
+            if (skill === "" || skill === undefined) {
+                return;
+            }
+
+            skill = capitalizeFirstLetter(skill);
+            // ensure we aren't trying to add duplicates
+            for (var i = 0; i < skills.length; i += 1) {
+                if (skills[i].Name === skill) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists === false) {
+                skills.push({ Name: skill });
+            }
+        }
+
+        function remove(skills, skill) {
+            skills.splice(skills.indexOf(skill), 1);
+        }
+        return {
+            add: add,
+            remove: remove
         }
     });
