@@ -94,7 +94,7 @@
         }
 
         function filterBySkill(graph) {
-            skillApi.search(graph.filters, function (data) {
+            skillApi.search(graph.skills, function (data) {
                 d3Model(data, graph);
             });
         }

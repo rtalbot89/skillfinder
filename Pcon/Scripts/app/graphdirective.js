@@ -4,7 +4,7 @@
         var style = {
             user: { circleFill: "#00ff00", icon: "\uf007", fontColour: "red" },
             ou: { circleFill: "yellow", icon: "\uf1ad", fontColour: "blue" },
-            "skill": { circleFill: "blue", icon: "\uf0ad", fontColour: "yellow" }
+            skill: { circleFill: "blue", icon: "\uf0ad", fontColour: "yellow" }
         };
 
         function dlink(scope, element) {
@@ -21,7 +21,7 @@
                 .classed("svg-content-responsive", true);
 
             scope.$watch(function () {
-                if (scope.links !== undefined && scope.nodes !== undefined && scope.flag === true) {
+                if (scope.flag === true) {
                     graphStart();
                 }
             });

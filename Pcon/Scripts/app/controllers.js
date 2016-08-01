@@ -36,46 +36,34 @@
     })
     .controller("graphController", function (dbNode, typeAhead) {
         var graph = this;
-        graph.filters = [];
+        graph.skills = [];
         graph.skill = "";
-        graph.flag = false;
-
-        graph.setNodes = function () {
-            graph.flag = false;
-            if (graph.skill !== "" && graph.filters.indexOf(graph.skill) !== -1) {
-                graph.skill = "";
-                return;
-            }
-
-            if (graph.skill !== "") {
-                graph.filters.push(graph.skill);
-                graph.skill = "";
-            }
-
-            if (graph.filters.length > 0) {
+      
+        var setNodes = function () {
+            if (graph.skills.length > 0) {
                 dbNode.filterBySkill(graph);
             } else {
                 dbNode.allBySkill(graph);
             }
         };
 
-        graph.setNodes();
+        setNodes();
 
-        graph.getLocation = function (val) {
+        graph.getSkill = function (val) {
             return typeAhead.skill(val);
         };
 
-        graph.addFilter = function () {
-            if (graph.filters.indexOf(graph.skill) === -1) {
-                graph.filters.push(graph.skill);
+        graph.addSkill = function () {
+            if (graph.skills.indexOf(graph.skill) === -1) {
+                graph.skills.push(graph.skill);
                 setNodes();
             }
             graph.skill = "";
         };
 
-        graph.removeFilter = function (filter) {
-            graph.filters.splice(graph.filters.indexOf(filter), 1);
-            graph.setNodes();
+        graph.removeSkill = function (index) {
+            graph.skills.splice(index, 1);
+            setNodes();
         };
     })
     .controller("listSkillsController", function (skillApi, arrayFunc) {
