@@ -1,22 +1,21 @@
 ﻿angular.module("find")
     .directive("skillgraph", function () {
 
+        var textColour = "rgb(255, 255, 196)";
         var style = {
-            user: { circleFill: "#00ff00", icon: "\uf007", fontColour: "red" },
-            ou: { circleFill: "yellow", icon: "\uf1ad", fontColour: "blue" },
-            skill: { circleFill: "blue", icon: "\uf0ad", fontColour: "yellow" }
+            user: { circleFill: "rgb(255, 64, 0)", icon: "\uf007", fontColour: textColour },
+            ou: { circleFill: "rgb(163, 26, 255)", icon: "\uf1ad", fontColour: textColour },
+            skill: { circleFill: "rgb(51, 102, 255)", icon: "\uf0ad", fontColour: textColour }
         };
 
         function dlink(scope, element) {
-            var width = 600, height = 400;
-
             var svg = d3.select(element[0])
                 .append("div")
                 .classed("svg-container", true) //container class to make it responsive
                 .append("svg")
                 //responsive SVG needs these 2 attributes and no width and height attr
                 .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox", "0 0 700 450")
+                .attr("viewBox", "0 0 730 440")
                  //class to make it responsive
                 .classed("svg-content-responsive", true);
 
@@ -34,7 +33,7 @@
                     .links(scope.links)
                     .charge(-120)
                     .linkDistance(50)
-                    .size([width, height])
+                    .size([parseInt(svg.style("width"), 10), parseInt(svg.style("height"), 10)])
                     .on("tick", tick);
 
                 d3.selectAll(".node").remove();

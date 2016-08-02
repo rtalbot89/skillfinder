@@ -42,19 +42,20 @@ body { padding-top: 70px; }
     padding-bottom: 60%; /* aspect ratio */
     vertical-align: top;
     overflow: hidden;
-   /*background-color: yellow;*/
    border: 1px solid rgb(204, 204, 204);
    border-radius: 4px;
+   background-color: rgb(255, 255, 230);
 }
 .svg-content-responsive {
     display: inline-block;
     position: absolute;
-    top: 0px;
+    top: 0;
     left: 0;
 }
 
 svg text {
    font-family: FontAwesome;
+    cursor: pointer;
 }
 
  
