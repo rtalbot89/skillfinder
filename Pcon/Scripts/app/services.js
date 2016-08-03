@@ -1,5 +1,5 @@
 ﻿angular.module("find")
-    .factory("typeAhead", function ($http) {
+    .factory("typeAhead", ["$http", function ($http) {
         function responseMap(data) {
             return data.map(function (item) { return item.Name; });
         }
@@ -20,7 +20,7 @@
             skill: skill,
             ou: ou
         };
-    })
+    }])
     .factory("profileApi", ["$resource", function ($resource) {
         return $resource("/api/neomyprofile",
             null,
@@ -59,7 +59,7 @@
             }
         }
     })
-    .factory("dbNode", function (arrayFunc, skillApi) {
+    .factory("dbNode", ["arrayFunc", "skillApi", function (arrayFunc, skillApi) {
         function d3Model(data, graph) {
             var i, d, userId, s, skillId, ouId;
             graph.force = {
@@ -109,7 +109,7 @@
             filterBySkill: filterBySkill,
             allBySkill: allBySkill
         }
-    })
+    }])
     .factory("skillArray", function () {
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);

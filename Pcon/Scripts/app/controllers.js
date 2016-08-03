@@ -1,5 +1,5 @@
 ﻿angular.module("find")
-    .controller("homeController", function ($routeParams, typeAhead, skillApi) {
+    .controller("listController", ["$routeParams", "typeAhead", "skillApi", function ($routeParams, typeAhead, skillApi) {
         var profiles = this;
         profiles.skills = [];
 
@@ -33,8 +33,8 @@
                 profiles.searchResults = [];
             }
         };
-    })
-    .controller("graphController", function (dbNode, typeAhead) {
+    }])
+    .controller("graphController",[ "dbNode", "typeAhead", function (dbNode, typeAhead) {
         var graph = this;
         graph.skills = [];
         graph.skill = "";
@@ -65,33 +65,43 @@
             graph.skills.splice(index, 1);
             setNodes();
         };
-    })
-    .controller("listSkillsController", function (skillApi, arrayFunc) {
+    }])
+    .controller("listSkillsController",[ "skillApi", "arrayFunc", function (skillApi, arrayFunc) {
         var skills = this;
 
         skillApi.query(function (data) {
             skills.list = arrayFunc.skillCount(data);
         });
-    })
-    .controller("profileController", function (profileApi) {
+    }])
+    .controller("profileController", ["profileApi", function (profileApi) {
         var profiles = this;
-        profiles.list = profileApi.query();
-    })
-    .controller("createController", function ($location, profileApi) {
-        var myProfile = this;
-        myProfile.data = {
+        profiles.list = profileApi.query(
+        // Because it's easier to display flatten the skills
+        function (data) {
+            data.forEach(function(d) {
+                d.skillString = d.Skills.map(function (s) { return s.Name }).sort().join(", ");
+            });
+        });
+    }])
+    .controller("createController", ["$location", "profileApi", function ($location, profileApi) {
+        var createProfile = this;
+        createProfile.data = {
             User: {},
             Ou: {},
             Skills: []
         };
 
-        myProfile.update = function () {
-            profileApi.save(myProfile.data, function () {
+        createProfile.create = function () {
+            profileApi.save(createProfile.data, function () {
                 $location.path("/profiles");
             });
         };
-    })
-    .controller("editController", function ($routeParams, $location, profileApi) {
+
+        createProfile.cancel = function () {
+          $location.path("/profiles");
+        };
+    }])
+    .controller("editController", ["$routeParams", "$location", "profileApi", function ($routeParams, $location, profileApi) {
         var editProfile = this;
         editProfile.data = profileApi.get({ id: $routeParams.id });
 
@@ -104,10 +114,12 @@
         editProfile.cancel = function () {
             $location.path("/profiles");
         };
-    })
-    .controller("deleteController", function ($routeParams, $location, profileApi) {
+    }])
+    .controller("deleteController", ["$routeParams", "$location", "profileApi", function ($routeParams, $location, profileApi) {
         var deleteProfile = this;
-        deleteProfile.data = profileApi.get({ id: $routeParams.id });
+        deleteProfile.data = profileApi.get({ id: $routeParams.id }, function(d) {
+            d.skillString = d.Skills.map(function(s) { return s.Name }).sort().join(", ");
+        });
 
         deleteProfile.delete = function () {
             profileApi.remove({ id: $routeParams.id }, function () {
@@ -118,4 +130,4 @@
         deleteProfile.cancel = function () {
             $location.path("/profiles");
         };
-    });
+    }]);

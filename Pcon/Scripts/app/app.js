@@ -1,41 +1,42 @@
 ﻿angular.module("find", ["ngRoute", "ngResource", "ui.bootstrap"])
-    .config(function($routeProvider) {
+    .config(function ($routeProvider) {
         $routeProvider
-            .when("/find",
-            {
-                templateUrl: "/Scripts/app/partials/home.html",
-                controller: "homeController",
-                controllerAs: "profiles"
-            })
             .when("/",
             {
                 templateUrl: "/Scripts/app/partials/graph.html",
                 controller: "graphController",
                 controllerAs: "graph"
             })
+            .when("/find",
+            {
+                templateUrl: "/Scripts/app/partials/list.html",
+                controller: "listController",
+                controllerAs: "profiles"
+            })
+
             .when("/skills",
             {
-                templateUrl: "/Scripts/app/partials/browseskills.html",
+                templateUrl: "/Scripts/app/partials/allskills.html",
                 controller: "listSkillsController",
                 controllerAs: "skills"
             })
-            .when("/profiles/:q",
+            .when("/find/:q",
             {
-                templateUrl: "/Scripts/app/partials/home.html",
-                controller: "homeController",
+                templateUrl: "/Scripts/app/partials/list.html",
+                controller: "listController",
                 controllerAs: "profiles"
             })
             .when("/profiles",
             {
-                templateUrl: "/Scripts/app/partials/allprofiles.html",
+                templateUrl: "/Scripts/app/partials/profiles.html",
                 controller: "profileController",
-                controllerAs: "allProfiles"
+                controllerAs: "profiles"
             })
             .when("/create",
             {
-                templateUrl: "/Scripts/app/partials/new.html",
+                templateUrl: "/Scripts/app/partials/create.html",
                 controller: "createController",
-                controllerAs: "myProfile"
+                controllerAs: "createProfile"
             })
             .when("/profiles/:id/edit",
             {

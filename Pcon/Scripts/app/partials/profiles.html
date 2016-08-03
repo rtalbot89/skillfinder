@@ -18,7 +18,7 @@
                 <td>{{person.User.Name}}</td>
                 <td>{{person.Ou.Name}}</td>
                 <td>
-                    <span ng-repeat="skill in person.Skills">{{skill.Name}} </span>
+                    {{person.skillString}}
                 </td>
                 <td><a ng-href="/#/profiles/{{person.User.UserName}}/edit">Edit</a> <a ng-href="/#/profiles/{{person.User.UserName}}/delete">Delete</a></td>
             </tr>

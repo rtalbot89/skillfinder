@@ -1,5 +1,5 @@
 ﻿angular.module("find")
-    .directive("ous", function (typeAhead) {
+    .directive("ous", ["typeAhead", function (typeAhead) {
 
         return {
             restrict: "E",
@@ -8,13 +8,13 @@
             },
             templateUrl: "/Scripts/app/partials/ous.html",
             link: function (scope) {
-                scope.getLocation = function (val) {
+                scope.getOu = function (val) {
                     return typeAhead.ou(val);
                 };
             }
         };
-    })
-    .directive("skills", function (typeAhead, skillArray) {
+    }])
+    .directive("skills", ["typeAhead", "skillArray", function (typeAhead, skillArray) {
 
         return {
             restrict: "E",
@@ -23,8 +23,8 @@
             },
             templateUrl: "/Scripts/app/partials/skills.html",
             link: function (scope) {
-                scope.removeSkill = function (skill) {
-                    skillArray.remove(scope.skills, skill);
+                scope.removeSkill = function (index) {
+                    scope.skills.splice(index, 1);
                 };
 
                 scope.addSkill = function () {
@@ -33,9 +33,9 @@
                     scope.noResults = false;
                 };
 
-                scope.getLocation = function (val) {
+                scope.getSkill = function (val) {
                     return typeAhead.skill(val);
                 };
             }
         };
-    });
+    }]);
