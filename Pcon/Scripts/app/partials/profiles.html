@@ -6,24 +6,23 @@
         <a ng-href="/#/create">Create profile</a>
         <table class="table">
             <thead>
-            <tr>
-                <th>Name</th>
-                <th>Organisation</th>
-                <th>Skills</th>
-                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Organisation</th>
+                    <th>Skills</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="person in allProfiles.list">
-                <td>{{person.User.Name}}</td>
-                <td>{{person.Ou.Name}}</td>
-                <td>
-                    {{person.skillString}}
-                </td>
-                <td><a ng-href="/#/profiles/{{person.User.UserName}}/edit">Edit</a> <a ng-href="/#/profiles/{{person.User.UserName}}/delete">Delete</a></td>
-            </tr>
-
+                <tr ng-repeat="person in allProfiles.list">
+                    <td>{{person.user.name}}</td>
+                    <td>{{person.ou.name}}</td>
+                    <td>
+                        {{person.skillString}}
+                    </td>
+                    <td><a ng-href="/#/profiles/{{person.user.userName}}/edit">Edit</a> <a ng-href="/#/profiles/{{person.user.userName}}/delete">Delete</a></td>
+                </tr>
             </tbody>
         </table>
-        </div>
+    </div>
 </div>

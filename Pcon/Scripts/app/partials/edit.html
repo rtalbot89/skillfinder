@@ -4,11 +4,11 @@
         <form novalidate class="form" name="profileForm">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" ng-model="editProfile.data.User.Name" required>
+                <input type="text" class="form-control" id="name" ng-model="editProfile.data.user.name" required>
             </div>
-            <ous ou="editProfile.data.Ou.Name"></ous>
-            <h4>My skills</h4>
-            <skills skill-list="editProfile.data.Skills"></skills>
+            <ous ou="editProfile.data.ou.name"></ous>
+            <h4>Skills</h4>
+            <skills skill-list="editProfile.data.skills"></skills>
             <div class="form-group">
                 <button class="btn btn-primary" ng-click="editProfile.update(profileForm)" ng-disabled="profileForm.$invalid || editProfile.skills.length == 0">Save</button>
                 <button class="btn btn-default" ng-click="editProfile.cancel()">Cancel</button>

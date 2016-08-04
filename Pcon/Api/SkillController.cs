@@ -5,27 +5,20 @@ using Pcon.DAL;
 namespace Pcon.Api
 {
     // Find profiles with skills
-    public class SkillSearchController : ApiController
+    public class SkillController : ApiController
     {
         private readonly SkillRepository _skillRepository;
       
-        public SkillSearchController()
+        public SkillController()
         {
             var graphClient = WebApiConfig.GraphClient;
             _skillRepository = new SkillRepository(graphClient);
         }
 
-        public SkillSearchController(ITransactionalGraphClient graphClient)
+        public SkillController(ITransactionalGraphClient graphClient)
         {
             _skillRepository = new SkillRepository(graphClient);
         }
-
-        //Return a single profile from a query for one skill
-        //public IHttpActionResult Get(string id)
-        //{
-        //    var profile = _skillRepository.GetUserWithSkills(id);
-        //    return Ok(profile);
-        //}
 
         // Get all profiles and skills
         public IHttpActionResult Get()

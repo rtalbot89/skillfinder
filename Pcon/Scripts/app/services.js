@@ -1,7 +1,7 @@
 ﻿angular.module("find")
     .factory("typeAhead", ["$http", function ($http) {
         function responseMap(data) {
-            return data.map(function (item) { return item.Name; });
+            return data.map(function (item) { return item.name; });
         }
         function skill(val) {
             return $http.get("/api/autoskills", { params: { query: val } })
@@ -22,14 +22,14 @@
         };
     }])
     .factory("profileApi", ["$resource", function ($resource) {
-        return $resource("/api/neomyprofile",
+        return $resource("/api/profile",
             null,
             {
                 "update": { method: "PUT" }
             });
     }])
     .factory("skillApi", ["$resource", function ($resource) {
-        return $resource("/api/skillsearch", null,
+        return $resource("/api/skill", null,
         {
             "search": { method: "POST", isArray: true }
         });
@@ -48,10 +48,10 @@
                 var tmpObj = {};
                 for (var i = 0; i < data.length; i += 1) {
                     for (var j = 0; j < data[i].skills.length; j += 1) {
-                        if (tmpObj[data[i].skills[j].Name] === undefined) {
-                            tmpObj[data[i].skills[j].Name] = 1;
+                        if (tmpObj[data[i].skills[j].name] === undefined) {
+                            tmpObj[data[i].skills[j].name] = 1;
                         } else {
-                            tmpObj[data[i].skills[j].Name] += 1;
+                            tmpObj[data[i].skills[j].name] += 1;
                         }
                     }
                 }
@@ -66,26 +66,26 @@
                 nodes: [],
                 links: []
             };
-
+ 
             for (i = 0; i < data.length; i++) {
                 d = data[i];
                 userId = graph.force.nodes.length;
-                graph.force.nodes.push({ name: d.user.Name, type: "user", id: userId });
+                graph.force.nodes.push({ name: d.user.name, type: "user", id: userId });
 
-                ouId = arrayFunc.hasValue(graph.force.nodes, d.ou.Name, "ou");
+                ouId = arrayFunc.hasValue(graph.force.nodes, d.ou.name, "ou");
                 if (ouId === -1) {
                     ouId = graph.force.nodes.length;
-                    graph.force.nodes.push({ name: d.ou.Name, type: "ou", id: ouId });
+                    graph.force.nodes.push({ name: d.ou.name, type: "ou", id: ouId });
                 }
 
                 graph.force.links.push({ source: userId, target: ouId });
 
                 for (var j = 0; j < d.skills.length; j++) {
                     s = d.skills[j];
-                    skillId = arrayFunc.hasValue(graph.force.nodes, s.Name, "skill");
+                    skillId = arrayFunc.hasValue(graph.force.nodes, s.name, "skill");
                     if (skillId === -1) {
                         skillId = graph.force.nodes.length;
-                        graph.force.nodes.push({ name: s.Name, type: "skill", id: skillId });
+                        graph.force.nodes.push({ name: s.name, type: "skill", id: skillId });
                     }
                     graph.force.links.push({ source: userId, target: skillId });
                 }
@@ -124,22 +124,28 @@
             skill = capitalizeFirstLetter(skill);
             // ensure we aren't trying to add duplicates
             for (var i = 0; i < skills.length; i += 1) {
-                if (skills[i].Name === skill) {
+                if (skills[i].name === skill) {
                     exists = true;
                     break;
                 }
             }
 
             if (exists === false) {
-                skills.push({ Name: skill });
+                skills.push({ name: skill });
             }
         }
 
         function remove(skills, skill) {
             skills.splice(skills.indexOf(skill), 1);
         }
+
+        function flatten(skills) {
+           return skills.map(function (s) { return s.name }).sort().join(", ");
+        }
+
         return {
             add: add,
-            remove: remove
+            remove: remove,
+            flatten: flatten
         }
     });

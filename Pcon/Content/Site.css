@@ -58,4 +58,18 @@ svg text {
     cursor: pointer;
 }
 
+.graph-no-results {
+    min-height:40px;
+    width:100%;
+}
+
+.graph-skill-list {
+    min-height:40px;
+    width:100%;
+}
+
+.sf-loading {
+    height: 20px;
+}
+
  

@@ -205,9 +205,8 @@
   <ItemGroup>
     <Compile Include="Api\AutoOrgController.cs" />
     <Compile Include="Api\AutoSkillsController.cs" />
-    <Compile Include="Api\ManageProfilesController.cs" />
-    <Compile Include="Api\NeoMyProfileController.cs" />
-    <Compile Include="Api\SkillSearchController.cs" />
+    <Compile Include="Api\ProfileController.cs" />
+    <Compile Include="Api\SkillController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -218,9 +217,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ClientNode.cs" />
-    <Compile Include="Models\OU.cs" />
     <Compile Include="Models\Profile.cs" />
-    <Compile Include="Models\Skill.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -285,13 +282,11 @@
     <Content Include="Scripts\app\partials\allskills.html" />
     <Content Include="Scripts\app\partials\delete.html" />
     <Content Include="Scripts\app\partials\edit.html" />
-    <Content Include="Scripts\app\partials\force.html" />
     <Content Include="Scripts\app\partials\graph.html" />
     <Content Include="Scripts\app\partials\list.html" />
     <Content Include="Scripts\app\partials\create.html" />
     <Content Include="Scripts\app\partials\ous.html" />
     <Content Include="Scripts\app\partials\skills.html" />
-    <Content Include="Scripts\app\partials\view.html" />
     <Content Include="Scripts\app\controllers.js" />
     <Content Include="Scripts\app\services.js" />
     <Content Include="Scripts\bootstrap.js" />

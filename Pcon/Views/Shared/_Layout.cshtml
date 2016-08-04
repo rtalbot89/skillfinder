@@ -6,11 +6,10 @@
     <title>Skill Finder</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top">
-       <div class="container-fluid">
+        <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
@@ -19,27 +18,24 @@
                 </button>
                 @Html.ActionLink("Skill finder", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-           </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/#/">Graph</a></li>
-                    <li><a href="/#/find">Find</a></li>
-                    <li><a href="/#/skills">Browse skills</a></li>
-                    <li><a href="/#/profiles">Profiles</a></li>
-                </ul>
-            </div>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/#/">Graph</a></li>
+                <li><a href="/#/find">Find</a></li>
+                <li><a href="/#/skills">Browse skills</a></li>
+                <li><a href="/#/profiles">Profiles</a></li>
+            </ul>
+        </div>
     </nav>
-   <div class="container">
-     
-     
+    <div class="container">
         @RenderBody()
-
- </div>
-  
-
+    </div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/angularjs")
+    @Scripts.Render("~/bundles/d3")
+    @Scripts.Render("~/bundles/app")
     @RenderSection("scripts", required: false)
 </body>
 </html>
