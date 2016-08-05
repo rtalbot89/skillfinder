@@ -31,7 +31,8 @@ namespace PconTests.DAL
         [OneTimeSetUp]
         public void SetupTests()
         {
-            _graphClient = new GraphClient(new Uri("http://localhost:7474/db/data"),"neo4j", "t3ng0que");
+            // Add Neo4J user and password
+            _graphClient = new GraphClient(new Uri("http://localhost:7474/db/data"),"user", "password");
             _graphClient.Connect();
             _repository = new SkillRepository(_graphClient);
         }

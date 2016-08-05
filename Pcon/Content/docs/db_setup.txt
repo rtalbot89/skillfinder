@@ -1,5 +1,5 @@
 ﻿LOAD CSV WITH HEADERS FROM "http://localhost:56140/content/docs/users.csv" 
-AS line CREATE (:User {Id: line.id, Name: line.Name})
+AS line CREATE (:User {Id: line.id, Name: line.Name, UserName: line.UserName})
 
 LOAD CSV WITH HEADERS FROM "http://localhost:56140/content/docs/ou.csv" 
 AS line CREATE (:OU {Id: line.id, Name: line.Name})
@@ -12,4 +12,9 @@ AS line MATCH (user:User { Id: line.user }),(skill:Skill { Id: line.skill}) CREA
 
 LOAD CSV WITH HEADERS FROM "http://localhost:56140/content/docs/works_in.csv" 
 AS line MATCH (user:User { Id: line.user }),(ou:OU { Id: line.ou}) CREATE (user)-[:WORKS_IN]->(ou)
+
+# These are needed for merge queries
+CREATE CONSTRAINT on (u:User) ASSERT u.UserName IS UNIQUE
+
+CREATE CONSTRAINT on (s:Skill) ASSERT s.Name IS UNIQUE
 

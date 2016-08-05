@@ -130,3 +130,167 @@ describe("graphController", function () {
           expect(graphController.force.nodes.length).toBe(30);
       });
 });
+
+describe("listSkillsController",
+    function () {
+        var $httpBackend, controller;
+        beforeEach(module("find"));
+
+        beforeEach(inject(function ($injector, $controller) {
+            $httpBackend = $injector.get("$httpBackend");
+            controller = $controller("listSkillsController");
+        }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation();
+            $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it("lists skills",
+            function () {
+                $httpBackend.expectGET("/api/skill").respond(profileData);
+                $httpBackend.expectGET("/Scripts/app/partials/graph.html").respond();
+                $httpBackend.flush();
+                expect(controller.list.length).toBe(15);
+            });
+    });
+
+describe("createController",
+    function () {
+        var $httpBackend, controller, $location;
+        beforeEach(module("find"));
+
+        beforeEach(inject(function ($injector, $controller, _$location_) {
+            $httpBackend = $injector.get("$httpBackend");
+            controller = $controller("createController");
+            $location = _$location_;
+        }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation();
+            $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it("can create a profile",
+            function () {
+                controller.data =  {
+                    user: {},
+                    ou: {},
+                    skills: []
+                };
+                controller.create();
+                $httpBackend.expectPOST("/api/profile").respond();
+                $httpBackend.expectGET("/Scripts/app/partials/graph.html").respond();
+                $httpBackend.expectGET("/Scripts/app/partials/profiles.html").respond();
+                $httpBackend.flush();
+
+                expect($location.path()).toBe("/profiles");
+            });
+    });
+
+describe("editController",
+    function () {
+        var $httpBackend, controller, $location;
+        beforeEach(module("find"));
+
+        beforeEach(inject(function ($injector, $controller, _$location_) {
+            $httpBackend = $injector.get("$httpBackend");
+            controller = $controller("editController");
+            $routeParams = {};
+            $location = _$location_;
+        }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation();
+            $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it("can get a profile from id",
+            function () {
+                var data = {
+                    user: {name: "test"},
+                    ou: {name: "test"},
+                    skills: [{name: "test"}]
+                };
+                $routeParams.id = "test";
+
+                $httpBackend.expectGET("/api/profile").respond(data);
+                $httpBackend.expectGET("/Scripts/app/partials/graph.html").respond();
+                $httpBackend.flush();
+
+                expect(controller.data.user.name).toBe("test");
+            });
+
+        it("can put an edited profile",
+           function () {
+               var data = {
+                   user: { name: "test" },
+                   ou: { name: "test" },
+                   skills: [{ name: "test" }]
+               };
+               $routeParams.id = "test";
+
+               controller.update();
+               $httpBackend.expectGET("/api/profile").respond(data);
+               $httpBackend.expectPUT("/api/profile").respond();
+               $httpBackend.expectGET("/Scripts/app/partials/graph.html").respond();
+               $httpBackend.expectGET("/Scripts/app/partials/profiles.html").respond();
+               $httpBackend.flush();
+
+               expect(controller.data.user.name).toBe("test");
+               expect($location.path()).toBe("/profiles");
+           });
+    });
+
+describe("deleteController",
+    function () {
+        var $httpBackend, controller, $location;
+        beforeEach(module("find"));
+
+        beforeEach(inject(function ($injector, $controller, _$location_) {
+            $httpBackend = $injector.get("$httpBackend");
+            controller = $controller("deleteController");
+            $routeParams = {};
+            $location = _$location_;
+        }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation();
+            $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it("can get a profile from id",
+            function () {
+                var data = {
+                    user: { name: "test" },
+                    ou: { name: "test" },
+                    skills: [{ name: "test" }]
+                };
+                $routeParams.id = "test";
+
+                $httpBackend.expectGET("/api/profile").respond(data);
+                $httpBackend.expectGET("/Scripts/app/partials/graph.html").respond();
+                $httpBackend.flush();
+
+                expect(controller.data.user.name).toBe("test");
+            });
+
+        it("can delete a profile",
+           function () {
+               var data = {
+                   user: { name: "test" },
+                   ou: { name: "test" },
+                   skills: [{ name: "test" }]
+               };
+               $routeParams.id = "test";
+
+               controller.delete();
+               $httpBackend.expectGET("/api/profile").respond(data);
+               $httpBackend.expectDELETE("/api/profile").respond();
+               $httpBackend.expectGET("/Scripts/app/partials/graph.html").respond();
+               $httpBackend.expectGET("/Scripts/app/partials/profiles.html").respond();
+               $httpBackend.flush();
+
+               expect($location.path()).toBe("/profiles");
+           });
+    });
