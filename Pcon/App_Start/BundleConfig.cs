@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace Pcon
 {
@@ -22,17 +21,30 @@ namespace Pcon
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/angularjs").Include(
                 "~/Scripts/angular.js",
                 "~/Scripts/angular-route.js",
                 "~/Scripts/angular-animate.js",
                 "~/Scripts/angular-touch.js",
                 "~/Scripts/angular-ui.js",
+                "~/Scripts/angular-resource.js",
                 "~/Scripts/angular-ui/ui-bootstrap-tpls.js"
+                ));
+
+            bundles.Add(new ScriptBundle("~/bundles/d3").Include("~/Scripts/d3/d3.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/app").Include(
+                "~/Scripts/app/app.js",
+                "~/Scripts/app/services.js",
+                "~/Scripts/app/directives.js",
+                "~/Scripts/app/graphdirective.js",
+                "~/Scripts/app/controllers.js"
                 ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/font-awesome.css",
                       "~/Content/site.css"));
         }
     }

@@ -1,0 +1,32 @@
+﻿<div class="col-md-12">
+    <div class="form-group">
+        <label for="skill">Find people by skill</label>
+        <input type="text" autocomplete="off" ng-model="profiles.skill" id="skill"
+               placeholder="Start typing to see suggestions"
+               uib-typeahead="skill for skill in profiles.getSkill($viewValue)"
+               typeahead-loading="loadingSkills"
+               typeahead-no-results="noResults"
+               typeahead-min-length=3
+               typeahead-on-select="profiles.addSkill()"
+               class="form-control">
+    </div>
+    <i ng-show="loadingSkills" class="glyphicon glyphicon-refresh"></i>
+    <div ng-show="noResults">
+        <i class="glyphicon glyphicon-remove"></i> No Results Found
+    </div>
+    <span ng-repeat="skill in profiles.skills">
+        <button class="btn btn-default btn-sm" ng-click="profiles.removeSkill($index)">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            {{skill}}
+        </button>
+    </span>
+    <ul class="list-unstyled">
+        <li ng-repeat="result in profiles.searchResults">
+            <h4 style="padding-bottom: 0; margin-bottom: 0;">{{result.user.name}}</h4>
+            <p>{{result.skillString}}<br/>
+                <small>{{result.ou.name}}</small>
+            </p>
+
+        </li>
+    </ul>
+</div>

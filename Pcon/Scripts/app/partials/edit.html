@@ -1,13 +1,21 @@
-﻿
-<div class="row">
+﻿<div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <h2>Edit my profile</h2>
-        <p><strong>Name: </strong>{{editProfile.data.User.Name}}</p>
-
-        <p><strong>OU: </strong>{{editProfile.data.OU.Name}}</p>
-        <p><strong>Skills</strong></p>
-        <skills skill-list="editProfile.skills"></skills>
-        <button class="btn btn-primary" ng-click="editProfile.update()">Update</button>
-        <button class="btn btn-cancel" ng-click="editProfile.cancel()">Cancel</button>
+        <h2>Edit profile</h2>
+        <form novalidate class="form" name="profileForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" ng-model="editProfile.data.user.name" required>
+            </div>
+            <ous ou="editProfile.data.ou.name"></ous>
+            <h4>Skills</h4>
+            <skills skill-list="editProfile.data.skills"></skills>
+            <div class="form-group">
+                <button class="btn btn-primary" ng-click="editProfile.update(profileForm)" ng-disabled="profileForm.$invalid || editProfile.skills.length == 0">Save</button>
+                <button class="btn btn-default" ng-click="editProfile.cancel()">Cancel</button>
+            </div>
+         
+        </form>
     </div>
 </div>
+
+

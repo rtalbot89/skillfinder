@@ -1,6 +1,6 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using Neo4jClient;
 using Neo4jClient.Transactions;
 using Pcon.Models;
 
@@ -8,184 +8,164 @@ namespace Pcon.DAL
 {
     public class SkillRepository
     {
-       // public readonly IGraphClient GraphClient;
         private readonly ITransactionalGraphClient _graphClient;
-
 
         public SkillRepository( ITransactionalGraphClient graphClient)
         {
             _graphClient = graphClient;
         }
 
-        public IEnumerable AllUsersAndOus()
-        {
-
-            var profiles = _graphClient.Cypher
-                    .Match("(ou: OU)<-[:WORKS_IN]-(user:User)")
-                    .Return((ou, user)
-                    => new
-                    {
-                        Ou = ou.As<OU>(),
-                        users = user.CollectAs<User>()
-                    })
-                    .Results;
-            return profiles;
-        }
-
-        public object GetProfileFromId(string id)
+        public IEnumerable<Profile> AllProfiles()
         {
             var profile = _graphClient.Cypher
                 .Match("(user:User)-[:HAS_SKILL]->(skill:Skill), (user)-[:WORKS_IN]->(ou: OU)")
-                .Where((User user) => user.Name == id)
                 .Return((user, skill, ou)
-                    => new
+                    => new Profile
                     {
                         User = user.As<User>(),
-                        Skills = skill.CollectAs<User>(),
-                        OU = ou.As<OU>()
+                        Skills = skill.CollectAs<ClientNode>(),
+                        Ou = ou.As<ClientNode>()
                     }
                 )
-                .Results;
+                .Results.OrderBy(p => p.User.Name);
+
             return profile;
         }
 
-        public object GetProfileFromUserName(string userName)
+        public Profile GetProfileFromUserName(string userName)
         {
             var profile = _graphClient.Cypher
                 .Match("(user:User)-[:HAS_SKILL]->(skill:Skill), (user)-[:WORKS_IN]->(ou: OU)")
                 .Where((User user) => user.UserName == userName)
                 .Return((user, skill, ou)
-                => new {
-                    User = user.As<User>(),
-                    Skills = skill.CollectAs<User>(),
-                    OU = ou.As<OU>()
-                }
+                    => new Profile
+                    {
+                        User = user.As<User>(),
+                        Skills = skill.CollectAs<ClientNode>(),
+                        Ou = ou.As<ClientNode>()
+                    }
                 )
                 .Results;
-            return profile;
+
+            return profile.FirstOrDefault();
         }
 
-
-        public IEnumerable AllUsersWithSkills()
+        public IEnumerable<Profile> AllUsersWithSkills()
         {
             var profiles = _graphClient.Cypher
-               .Match("(user:User)-[:HAS_SKILL]->(skill:Skill)")
-               .Return((user, skill) => new
-               {
-                   user = user.As<User>(),
-                   skills = skill.CollectAs<User>()
-               }
-               )
-               .Results;
+                .Match("(ou:OU)<-[:WORKS_IN]-(user:User)-[:HAS_SKILL]->(skill:Skill)")
+                .Return((user, ou, skill)
+                    => new Profile
+                    {
+                        User = user.As<User>(),
+                        Ou = ou.As<ClientNode>(),
+                        Skills = skill.CollectAs<ClientNode>(),
+                    }
+                )
+                .Results.OrderBy(p => p.User.Name);
+
             return profiles;
         }
 
-        public object GetUserWithSkills(string id)
+        public IEnumerable<Profile> UserHasSkills(string[] skills)
         {
             var profile = _graphClient.Cypher
-                .Match("(user:User)-[:HAS_SKILL]->(qs:Skill), (otherskill:Skill)<-[:HAS_SKILL]-(user)-[:WORKS_IN]->(ou: OU)")
-                .Where((Skill qs) => qs.Name == id)
-                .Return((user, otherskill, ou, qs)
-                => new
-                {
-                    user = user.As<User>(),
-                    skills = otherskill.CollectAs<User>(),
-                    qs = qs.As<User>(),
-                    OU = ou.As<OU>()
-                }
+                .Match("(user:User)-[:HAS_SKILL]->(s) WHERE s.Name IN {skillList}")
+                .WithParam("skillList", skills)
+                .With("user, s")
+                .Match("(user)-[:WORKS_IN]->(ou:OU)")
+                .Return((user, s, ou)
+                    => new Profile
+                    {
+                        User = user.As<User>(),
+                        Skills = s.CollectAs<ClientNode>(),
+                        Ou = ou.As<ClientNode>()
+                    }
                 )
-                .Results;
-            return profile;
-        }
-
-        public object UserHasSkills(string[] id)
-        {
-            var profile =_graphClient.Cypher
-               .Match("(user:User)-[:HAS_SKILL]->(s) WHERE s.Name IN {skillList}")
-               .WithParam("skillList", id)
-               .With("user")
-               .Match("(user)-[:HAS_SKILL]->(userskill:Skill)")
-               .With("user, userskill")
-               .Match("(user)-[:WORKS_IN]->(ou:OU)")
-               .Return((user, userskill, ou)
-               => new
-               {
-                   user = user.As<User>(),
-                   skills = userskill.CollectAsDistinct<User>(),
-                   OU = ou.As<User>()
-               }
-               )
-               .Results;
+                .Results.OrderBy(p => p.User.Name);
 
             return profile;
-
         }
 
-        public object UsersAllSkills()
+        public void CreateProfile(Profile profile)
         {
-            var profiles =_graphClient.Cypher
-              .Match("(user:User)-[:HAS_SKILL]->(skill:Skill)")
-              .Return((user, skill) => new
-              {
-                  user = user.As<User>(),
-                  skills = skill.CollectAs<User>()
-              }
-              )
-              .Results;
-           return profiles;
-
-        }
-        public void CreateProfile(Profile id, string userName)
-        {
-
-            var newUser = new { Name = id.Name, UserName = userName };
-            var organisation = new { Name = id.Organisation };
-           _graphClient.Cypher
+            _graphClient.Cypher
                 .Merge("(user:User { UserName: {username} })")
                 .OnCreate()
                 .Set("user = {newUser}")
+                .Merge("(ou:OU {Name: {ouName} })")
+                .OnCreate()
+                .Set("ou = {profileOu}")
+                .CreateUnique("(user)-[:WORKS_IN]->(ou)")
+                .ForEach(
+                    "(skn in {skillList} | MERGE (sk:Skill {Name: skn.Name }) " +
+                    "SET sk = skn CREATE UNIQUE (user)-[:HAS_SKILL]->(sk))")
                 .WithParams(new
                 {
-                    username = userName,
-                    newUser
+                    username = profile.User.UserName,
+                    newUser = profile.User,
+                    ouName = profile.Ou.Name,
+                    profileOu = profile.Ou,
+                    skillList = profile.Skills
                 })
                 .ExecuteWithoutResults();
-           _graphClient.Cypher
-               .Merge("(ou: OU{ Name: {name} })")
-               .OnCreate()
-               .Set("ou = {organisation}")
-               .WithParams(new
-               {
-                   name = organisation.Name,
-                   organisation
-               })
-               .ExecuteWithoutResults();
-           _graphClient.Cypher
-                .Match("(user:User)", "(ou:OU)")
-                .Where((User user) => user.Name == id.Name)
-                .AndWhere((OU ou) => ou.Name == id.Organisation)
-                .CreateUnique("(user)-[:WORKS_IN]->(ou)")
-                .ExecuteWithoutResults();
+        }
 
-            // A rudimentary way of adding skills and relationships
-            // Is there a way of avoiding foreach?
-            foreach (var s in id.Skills)
-            {
-                var newSkill = new { Name = s };
-               _graphClient.Cypher
-                    .Match("(user:User)")
-                    .Where((User user) => user.UserName == userName)
-                    .Merge("(skill:Skill { Name: {name} })")
-                    .OnCreate()
-                    .Set("skill = {newSkill}")
-                    .CreateUnique("(user)-[:HAS_SKILL]->(skill)")
-                    .WithParams(new
-                    {
-                        name = newSkill.Name,
-                        newSkill
-                    })
-                    .ExecuteWithoutResults();
-            }
+        public void UpdateProfile(Profile profile)
+        {
+            _graphClient.Cypher
+                .Match("()<-[s:HAS_SKILL]-(user:User)-[w:WORKS_IN]->()")
+                .Where((User user) => user.UserName == profile.User.UserName)
+                .Set("user.Name = {name}")
+                .WithParam("name", profile.User.Name)
+                .Delete("w")
+                .Delete("s")
+                .With("user")
+                .Merge("(ou:OU {Name: {ouName} })")
+                .OnCreate()
+                .Set("ou = {profileOu}")
+                .CreateUnique("(user)-[:WORKS_IN]->(ou)")
+                .ForEach(
+                    "(skn in {skillList} | MERGE (sk:Skill {Name: skn.Name }) " +
+                    "SET sk = skn CREATE UNIQUE (user)-[:HAS_SKILL]->(sk))")
+                .WithParams(new
+                {
+                    ouName = profile.Ou.Name,
+                    profileOu = profile.Ou,
+                    skillList = profile.Skills
+                })
+                .ExecuteWithoutResults();
+        }
+
+        public void RemoveProfile(string id)
+        {
+            _graphClient.Cypher
+              .OptionalMatch("(user:User)-[r]->()")
+              .Where((User user) => user.UserName == id)
+              .Delete("r, user")
+              .ExecuteWithoutResults();
+        }
+
+        public IEnumerable<ClientNode> OrgSuggest(string query)
+        {
+            var suggestions = _graphClient.Cypher
+                .Match("(ou:OU) WHERE ou.Name =~ { q } ")
+                .WithParam("q", "(?i).*" + query + ".*")
+                .Return(ou => ou.As<ClientNode>())
+                .Results;
+
+            return suggestions;
+        }
+
+        public IEnumerable SkillSuggest(string query)
+        {
+            var suggestions = _graphClient.Cypher
+                .Match("(skill:Skill) WHERE skill.Name =~ { q } ")
+                .WithParam("q", "(?i).*" + query + ".*")
+                .Return(skill => skill.As<ClientNode>())
+                .Results;
+
+            return suggestions;
         }
     }
 }

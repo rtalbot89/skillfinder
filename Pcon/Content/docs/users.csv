@@ -1,11 +1,11 @@
-id,Name
-1,Tom Smith
-2,Mary Brown
-3,John White
-4,Anne Black
-5,Joan Green
-6,David Jones
-7,Philip Sparks
-8,Samuel Keen
-9,Maureen Tremain
-10,Arthur Dee
+id,Name,UserName
+1,Tom Smith,tsmith
+2,Mary Brown,mbrown
+3,John White,jwhite
+4,Anne Black,ablack
+5,Joan Green,jgreen
+6,David Jones,djones
+7,Philip Sparks,psparks
+8,Samuel Keen,skeen
+9,Maureen Tremain,mtremain
+10,Arthur Dee,adee

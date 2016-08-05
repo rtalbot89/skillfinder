@@ -1,40 +1,16 @@
-﻿body {
-   /* font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #383838;
-       */
-}
-
-
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-   /* white-space: normal;*/
-}
-
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    /*max-width: 280px;*/
-}
-
- .typeahead-demo .custom-popup-wrapper {
+﻿.typeahead-demo .custom-popup-wrapper {
     position: absolute;
     top: 100%;
     left: 0;
     z-index: 1000;
     display: none;
-    /*background-color: #f9f9f9;*/
-  }
+}
 
-  .typeahead-demo .custom-popup-wrapper > .message {
+.typeahead-demo .custom-popup-wrapper > .message {
     padding: 10px 20px;
     border-bottom: 1px solid #ddd;
     color: #868686;
-  }
+}
 
   .typeahead-demo .custom-popup-wrapper > .dropdown-menu {
     position: static;
@@ -45,73 +21,11 @@ textarea {
     border: none;
     border-radius: 0;
     box-shadow: none;
-  }
+ }
 
  input.ng-invalid.ng-touched {
     background-color: #FA787E;
   }
-
-input.ng-valid.ng-touched {
-   /* background-color: #78FA89;*/
-}
-
-
-/* ID7 stuff*/
-@media (min-width: 768px) {
-    .id7-masthead {
-        background-image: url('masthead-logo-bleed-sm.svg');
-        background-repeat: no-repeat;
-        background-position: 0 24px;
-        background-size: 1170px 300px;
-        background-color:#3f4246;
-        height:120px; 
-    }
-
-    .id7-masthead h1 {
-        padding-top:130px;
-        margin-top: 0;
-        margin-left:20px;
-        font-size: 30px;
-    }
-
-    .navbar {
-    /*border-radius: 0px;*/
-}
-}
-.id7-page-header {
-    background-color: white;
-    margin:0;
-    padding:0;
-}
-
-@media (min-width: 768px) {
-    .id7-left-border {
-        background-image: url("library_border_lhs_id7.jpg");
-    }
-}
-
-.navbar-inverse {
-    /*background-color: #3f4246;
-    border-color: #080808;
-        */
-   background-color: #445093;
-    border-color:  #445093;
-   
-}
-
-.navbar-inverse .navbar-nav > li > a {
-  /*  color: #999999;
-     color: #ffffff; */
-}
-
-.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
-   /* color: #ffffff;
-    color: #999999; */
-}
-
-body > div > div.jumbotron > ul > li > a {
-    color: white;
-}
 
 .link {
  stroke: #999;
@@ -119,43 +33,43 @@ body > div > div.jumbotron > ul > li > a {
   stroke-width: 2px;
 }
 
-body { padding-top: 50px; }
+body { padding-top: 70px; }
 
 .svg-container {
     display: inline-block;
     position: relative;
     width: 100%;
-    padding-bottom: 40%; /* aspect ratio */
+    padding-bottom: 60%; /* aspect ratio */
     vertical-align: top;
     overflow: hidden;
-   /*background-color: yellow;*/
    border: 1px solid rgb(204, 204, 204);
    border-radius: 4px;
+   background-color: rgb(255, 255, 230);
 }
 .svg-content-responsive {
     display: inline-block;
     position: absolute;
-    top: 0px;
+    top: 0;
     left: 0;
 }
 
-.jumbotron {
-    background-color:#755CFF;
-    color:white;
+svg text {
+   font-family: FontAwesome;
+    cursor: pointer;
 }
 
-@media (min-width: 768px) {
-    .jumbotron {
-        position: relative;
-        background: #000 url("sfbanner-2.svg") center center;
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        overflow: hidden;
-         background-color:#755CFF;
-    color:white;
-    }
+.graph-no-results {
+    min-height:40px;
+    width:100%;
 }
 
+.graph-skill-list {
+    min-height:40px;
+    width:100%;
+}
+
+.sf-loading {
+    height: 20px;
+}
 
  

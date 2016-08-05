@@ -1,20 +1,28 @@
-﻿using System.Linq;
-using System.Web.Http;
-using Pcon.Models;
+﻿using System.Web.Http;
+using Neo4jClient.Transactions;
+using Pcon.DAL;
 
 namespace Pcon.Api
 {
     public class AutoOrgController : ApiController
     {
-        public IHttpActionResult Get(string query = "")
+        private readonly SkillRepository _repository;
+
+        public AutoOrgController()
         {
             var graphClient = WebApiConfig.GraphClient;
-            var suggestions = graphClient.Cypher
-                .Match("(ou:OU) WHERE ou.Name =~ { q } ")
-                .WithParam("q", "(?i).*" + query + ".*")
-                .Return((ou) => new { OU = ou.CollectAs<OU>() })
-                .Results;
-            return Ok(suggestions.ToList().ElementAt(0).OU.OrderBy(o => o.Name));
+            _repository = new SkillRepository(graphClient);
+        }
+
+        public AutoOrgController(ITransactionalGraphClient graphClient)
+        {
+            _repository = new SkillRepository(graphClient);
+        }
+
+        public IHttpActionResult Get(string query = "")
+        {
+            var suggestions = _repository.OrgSuggest(query);
+            return Ok(suggestions);
         }
     }
 }

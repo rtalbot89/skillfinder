@@ -1,0 +1,19 @@
+﻿
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <h2>Delete profile</h2>
+        <h4>Username</h4>
+        <p>{{deleteProfile.data.user.userName}}</p>
+        <h4>Name</h4>
+        <p>{{deleteProfile.data.user.name}}</p>
+        <h4>Department</h4>
+        <p>{{deleteProfile.data.ou.name}}</p>
+        <h4>Skills</h4>
+        <p>{{deleteProfile.data.skillString}}</p>
+        <p>
+            <button class="btn btn-danger" ng-click="deleteProfile.delete();">Delete</button>
+            <button class="btn btn-default" ng-click="deleteProfile.cancel();">Cancel</button>
+        </p>
+      
+    </div>
+</div>

@@ -78,7 +78,7 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Neo4jClient, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neo4jClient.1.1.0.34\lib\net45\Neo4jClient.dll</HintPath>
+      <HintPath>..\packages\Neo4jClient.1.1.0.39\lib\net45\Neo4jClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -205,29 +205,19 @@
   <ItemGroup>
     <Compile Include="Api\AutoOrgController.cs" />
     <Compile Include="Api\AutoSkillsController.cs" />
-    <Compile Include="Api\Neo4jController.cs" />
-    <Compile Include="Api\NeoMyProfileController.cs" />
-    <Compile Include="Api\SkillSearchController.cs" />
+    <Compile Include="Api\ProfileController.cs" />
+    <Compile Include="Api\SkillController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\MyProfileController.cs" />
-    <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="DAL\SkillRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\OU.cs" />
+    <Compile Include="Models\ClientNode.cs" />
     <Compile Include="Models\Profile.cs" />
-    <Compile Include="Models\Skill.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -238,22 +228,15 @@
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\hammer-circle.png" />
-    <Content Include="Content\masthead-sm.svg" />
-    <Content Include="Content\masthead-w.svg" />
-    <Content Include="Content\masthead.svg" />
-    <Content Include="Content\person-circle.png" />
-    <Content Include="Content\personicon.png" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\select2.css" />
     <Content Include="Content\select2.png" />
     <Content Include="Content\select2x2.png" />
-    <Content Include="Content\sfbanner-2.svg" />
-    <Content Include="Content\sfbanner.png" />
-    <Content Include="Content\sfbanner.svg" />
-    <Content Include="Content\skillfinder.png" />
     <Content Include="Content\spinner.gif" />
     <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -292,16 +275,20 @@
     <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
-    <Content Include="Scripts\app\find.js" />
-    <Content Include="Scripts\app\partials\browseskills.html" />
+    <Content Include="Scripts\app\directives.js" />
+    <Content Include="Scripts\app\app.js" />
+    <Content Include="Scripts\app\graphdirective.js" />
+    <Content Include="Scripts\app\partials\profiles.html" />
+    <Content Include="Scripts\app\partials\allskills.html" />
+    <Content Include="Scripts\app\partials\delete.html" />
     <Content Include="Scripts\app\partials\edit.html" />
-    <Content Include="Scripts\app\partials\force.html" />
     <Content Include="Scripts\app\partials\graph.html" />
-    <Content Include="Scripts\app\partials\home.html" />
-    <Content Include="Scripts\app\partials\new.html" />
+    <Content Include="Scripts\app\partials\list.html" />
+    <Content Include="Scripts\app\partials\create.html" />
+    <Content Include="Scripts\app\partials\ous.html" />
     <Content Include="Scripts\app\partials\skills.html" />
-    <Content Include="Scripts\app\partials\view.html" />
-    <Content Include="Scripts\app\profile.js" />
+    <Content Include="Scripts\app\controllers.js" />
+    <Content Include="Scripts\app\services.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -326,6 +313,11 @@
     <Content Include="Content\docs\skills.csv" />
     <Content Include="Content\docs\users.csv" />
     <Content Include="Content\docs\works_in.csv" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
     <None Include="Properties\PublishProfiles\skillfinder.pubxml" />
     <Content Include="Scripts\d3\LICENSE" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -1099,33 +1091,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\ConfirmEmail.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Account\ForgotPassword.cshtml" />
-    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\ResetPassword.cshtml" />
-    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\SendCode.cshtml" />
-    <Content Include="Views\Account\VerifyCode.cshtml" />
-    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
-    <Content Include="Views\Manage\ChangePassword.cshtml" />
-    <Content Include="Views\Manage\Index.cshtml" />
-    <Content Include="Views\Manage\ManageLogins.cshtml" />
-    <Content Include="Views\Manage\SetPassword.cshtml" />
-    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
-    <Content Include="Views\Shared\Lockout.cshtml" />
-    <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Profile\Index.cshtml" />
-    <Content Include="Views\Profile\Create.cshtml" />
     <Content Include="Scripts\version.json" />
-    <Content Include="Views\MyProfile\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
